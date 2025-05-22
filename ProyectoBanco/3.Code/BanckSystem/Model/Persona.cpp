@@ -1,82 +1,18 @@
 #include "Persona.h"
-#include <iostream>
-using namespace std;
 
-Persona::Persona() {}
-
-Persona::Persona(string n, string a, string c, string co, string t)
-    : nombre(n), apellido(a), cedula(c), correo(co), telefono(t) {}
+Persona::Persona(string cedula, string nombre, string apellido, string correo, string telefono, Fecha fechaNacimiento)
+    : cedula(cedula), nombre(nombre), apellido(apellido), correo(correo), telefono(telefono), fechaNacimiento(fechaNacimiento) {}
 
 string Persona::getCedula() const { return cedula; }
 string Persona::getNombre() const { return nombre; }
+string Persona::getApellido() const { return apellido; }
+string Persona::getCorreo() const { return correo; }
+string Persona::getTelefono() const { return telefono; }
+Fecha Persona::getFechaNacimiento() const { return fechaNacimiento; }
 
-void Persona::mostrar() const {
-    cout << "Nombre: " << nombre << " " << apellido << "\n";
-    cout << "Cedula: " << cedula << "\n";
-    cout << "Correo: " << correo << "\n";
-    cout << "Telefono: " << telefono << "\n";
-}
-
-void Persona::escribir(ofstream& out) const {
-    size_t len;
-
-    len = nombre.size();
-    out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-    out.write(nombre.c_str(), len);
-
-    len = apellido.size();
-    out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-    out.write(apellido.c_str(), len);
-
-    len = cedula.size();
-    out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-    out.write(cedula.c_str(), len);
-
-    len = correo.size();
-    out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-    out.write(correo.c_str(), len);
-
-    len = telefono.size();
-    out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-    out.write(telefono.c_str(), len);
-}
-
-void Persona::leer(ifstream& in) {
-    size_t len;
-    char* buffer;
-
-    in.read(reinterpret_cast<char*>(&len), sizeof(len));
-    buffer = new char[len + 1];
-    in.read(buffer, len);
-    buffer[len] = '\0';
-    nombre = buffer;
-    delete[] buffer;
-
-    in.read(reinterpret_cast<char*>(&len), sizeof(len));
-    buffer = new char[len + 1];
-    in.read(buffer, len);
-    buffer[len] = '\0';
-    apellido = buffer;
-    delete[] buffer;
-
-    in.read(reinterpret_cast<char*>(&len), sizeof(len));
-    buffer = new char[len + 1];
-    in.read(buffer, len);
-    buffer[len] = '\0';
-    cedula = buffer;
-    delete[] buffer;
-
-    in.read(reinterpret_cast<char*>(&len), sizeof(len));
-    buffer = new char[len + 1];
-    in.read(buffer, len);
-    buffer[len] = '\0';
-    correo = buffer;
-    delete[] buffer;
-
-    in.read(reinterpret_cast<char*>(&len), sizeof(len));
-    buffer = new char[len + 1];
-    in.read(buffer, len);
-    buffer[len] = '\0';
-    telefono = buffer;
-    delete[] buffer;
-}
+void Persona::setCedula(string cedula) { this->cedula = cedula; }
+void Persona::setNombre(string nombre) { this->nombre = nombre; }
+void Persona::setApellido(string apellido) { this->apellido = apellido; }
+void Persona::setCorreo(string correo) { this->correo = correo; }
+void Persona::setTelefono(string telefono) { this->telefono = telefono; }
+void Persona::setFechaNacimiento(Fecha fechaNacimiento) { this->fechaNacimiento = fechaNacimiento; }

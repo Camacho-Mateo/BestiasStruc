@@ -1,58 +1,45 @@
 #include "Fecha.h"
-#include <sstream>
-#include <iomanip>
+#include <iostream>
+#include <cstring>
+#include <conio.h>
+#include <cctype> 
 
 using namespace std;
 
 Fecha::Fecha() {
-    time_t now = time(0);
-    tm* ltm = localtime(&now);
-    dia = ltm->tm_mday;
-    mes = ltm->tm_mon + 1;
-    anio = 1900 + ltm->tm_year;
+    fechaNacimiento = new char[11];
+    strcpy(fechaNacimiento, "");
 }
 
-Fecha::Fecha(int dia, int mes, int anio) {
-    if (validarFecha(dia, mes, anio)) {
-        this->dia = dia;
-        this->mes = mes;
-        this->anio = anio;
-    } else {
-        throw invalid_argument("Fecha inválida.");
+Fecha::~Fecha() {
+    delete[] fechaNacimiento;
+}
+
+void Fecha::pedirFecha() {
+    cout << "Ingrese la fecha de nacimiento (DD/MM/AAAA): ";
+    char entrada[11] = "";
+    int pos = 0;
+
+    while (pos < 10) {
+        char c = getch();
+
+        // Validar posiciones específicas
+        if ((pos == 2 || pos == 5) && c == '/') {
+            cout << c;
+            entrada[pos++] = c;
+        } else if (isdigit(c) && pos != 2 && pos != 5) {
+            cout << c;
+            entrada[pos++] = c;
+        } else if (c == 8 && pos > 0) {
+            pos--;
+            cout << "\b \b";
+        }
     }
+
+    entrada[10] = '\0';
+    strcpy(fechaNacimiento, entrada);
 }
 
-bool Fecha::esBisiesto(int anio) {
-    return ((anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0));
-}
-
-bool Fecha::validarFecha(int dia, int mes, int anio) {
-    if (anio < 1900 || anio > 2100 || mes < 1 || mes > 12 || dia < 1) {
-        return false;
-    }
-
-    int diasPorMes[] = { 31, esBisiesto(anio) ? 29 : 28, 31, 30, 31, 30,
-                         31, 31, 30, 31, 30, 31 };
-
-    return dia <= diasPorMes[mes - 1];
-}
-
-int Fecha::getDia() const {
-    return dia;
-}
-
-int Fecha::getMes() const {
-    return mes;
-}
-
-int Fecha::getAnio() const {
-    return anio;
-}
-
-string Fecha::toString() const {
-    stringstream ss;
-    ss << setfill('0') << setw(2) << dia << "/"
-       << setfill('0') << setw(2) << mes << "/"
-       << anio;
-    return ss.str();
+const char* Fecha::getFecha() const {
+    return fechaNacimiento;
 }

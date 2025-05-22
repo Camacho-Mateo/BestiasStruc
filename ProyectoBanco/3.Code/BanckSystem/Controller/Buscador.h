@@ -1,19 +1,24 @@
-#include <iostream>
+#ifndef BUSCADOR_H
+#define BUSCADOR_H
+
+#include <string>
+#include "../Model/CuentaAhorro.h"
+#include "../Model/CuentaCorriente.h"
+
 using namespace std;
 
-template<typename T>
-Nodo<T>* Buscador::buscarElemento(ListaDoble<T>& lista, const T& valor, bool (*comparar)(const T&, const T&)) {
-    return lista.buscar(comparar, valor);
-}
+class Buscador {
+private:
+    CuentaAhorro* cuentaAhorro;
+    CuentaCorriente* cuentaCorriente;
 
-bool Buscador::compararPorCedula(const Persona& p, const Persona& valor) {
-    return p.getCedula() == valor.getCedula();
-}
+public:
+    Buscador(CuentaAhorro* ahorro, CuentaCorriente* corriente);
 
-bool Buscador::compararPorNumeroCuentaAhorro(const CuentaAhorro& c, const CuentaAhorro& valor) {
-    return c.getNumeroCuenta() == valor.getNumeroCuenta();
-}
+    int buscarPorCedula(const string& cedula, bool esAhorro);
+    int buscarPorNombre(const string& nombre, bool esAhorro);
+    int buscarPorCuenta(int numeroCuenta, bool esAhorro);
 
-bool Buscador::compararPorNumeroCuentaCorriente(const CuentaCorriente& c, const CuentaCorriente& valor) {
-    return c.getNumeroCuenta() == valor.getNumeroCuenta();
-}
+};
+
+#endif

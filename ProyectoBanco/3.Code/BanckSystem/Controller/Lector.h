@@ -1,9 +1,20 @@
-#include "Lector.h"
-#include <iostream>
+#ifndef LECTOR_H
+#define LECTOR_H
 
-Lector::Lector(AdministradorBinario& admin) : adminBinario(admin) {}
+#include <string>
+#include "Buscador.h"
 
-void Lector::leerHistorialCuenta(const std::string& numeroCuenta) const {
-    std::cout << "Leyendo historial para la cuenta: " << numeroCuenta << std::endl;
-    adminBinario.leerEventos();
-}
+using namespace std;
+
+class Lector {
+private:
+    Buscador* buscador;
+
+public:
+    Lector(Buscador* buscador);
+    void mostrarDatosPorCuenta(const string& numeroCuenta);
+    void mostrarDatosPorCedula(const string& cedula);
+};
+
+#endif
+

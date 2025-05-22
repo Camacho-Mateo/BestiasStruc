@@ -3,25 +3,20 @@
 
 #include <string>
 #include <fstream>
+#include "../Model/Persona.h"
 #include "../Model/Fecha.h"
+
 using namespace std;
 
-struct Evento {
-    string descripcion;
-    Fecha fecha;
-
-    void escribir(ofstream& out) const;
-    void leer(ifstream& in);
-};
-
 class AdministradorBinario {
+private:
     string nombreArchivo;
 
 public:
-    AdministradorBinario(const string& archivo);
+    AdministradorBinario(const string& nombreArchivo);
 
-    void registrarEvento(const string& descripcion, const Fecha& fecha);
-    void leerEventos() const;
+    void guardarRegistro(const Persona& persona, const Fecha& fechaRegistro, double saldo);
+    void registrarMovimiento(const string& cedula, const string& tipoMovimiento, double monto, const string& fecha, double saldoFinal);
 };
 
 #endif

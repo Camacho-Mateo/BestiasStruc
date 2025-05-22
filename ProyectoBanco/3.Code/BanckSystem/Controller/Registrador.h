@@ -1,20 +1,24 @@
 #ifndef REGISTRADOR_H
 #define REGISTRADOR_H
 
+#include <iostream>
 #include "../Model/Persona.h"
+#include "../Model/CuentaAhorro.h"
+#include "../Model/CuentaCorriente.h"
 #include "../Model/Validador.h"
-#include "AdministradorBinario.h"
 #include "../Model/Fecha.h"
-#include <string>
+
 using namespace std;
 
 class Registrador {
-    AdministradorBinario& adminBinario;
+private:
+    CuentaAhorro* cuentaAhorro;
+    CuentaCorriente* cuentaCorriente;
 
 public:
-    Registrador(AdministradorBinario& admin);
+    Registrador(CuentaAhorro* ca, CuentaCorriente* cc);
 
-    bool registrarUsuario(const Persona& persona);
+    void registrarPersona();
 };
 
 #endif

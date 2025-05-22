@@ -2,19 +2,23 @@
 #define CAJERO_H
 
 #include <string>
-#include "../Model/Fecha.h"
-#include "AdministradorBinario.h"
+#include "Buscador.h"
 
 using namespace std;
 
 class Cajero {
-    AdministradorBinario& adminBinario;
+private:
+    Buscador* buscador;
 
 public:
-    Cajero(AdministradorBinario& admin);
+    Cajero(Buscador* buscador);
 
-    void depositar(const string& numeroCuenta, double cantidad, const Fecha& fecha);
-    bool transferir(const string& cuentaOrigen, const string& cuentaDestino, double cantidad, const Fecha& fecha);
+    bool depositar(const string& cedula, bool esAhorro, double monto);
+    bool retirar(const string& cedula, bool esAhorro, double monto);
+    bool transferir(const string& cedulaOrigen, bool esAhorroOrigen, const string& cedulaDestino, bool esAhorroDestino, double monto);
+
+    double consultarSaldo(const string& cedula, bool esAhorro);
 };
 
 #endif
+
