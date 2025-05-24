@@ -2,19 +2,21 @@
 #define LECTOR_H
 
 #include <string>
+#include "../Model/CuentaAhorro.h"
+#include "../Model/CuentaCorriente.h"
 #include "Buscador.h"
-
-using namespace std;
 
 class Lector {
 private:
+    CuentaAhorro* cuentaAhorro;
+    CuentaCorriente* cuentaCorriente;
     Buscador* buscador;
 
 public:
-    Lector(Buscador* buscador);
-    void mostrarDatosPorCuenta(const string& numeroCuenta);
-    void mostrarDatosPorCedula(const string& cedula);
+    Lector(CuentaAhorro* ca, CuentaCorriente* cc, Buscador* b);
+    
+    void mostrarDatosPorCuenta(const std::string& numeroCuenta, bool esAhorro);
+    void mostrarDatosPorCedula(const std::string& cedula, bool esAhorro);
 };
 
 #endif
-

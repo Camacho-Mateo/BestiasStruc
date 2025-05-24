@@ -2,14 +2,13 @@
 #include <fstream>
 #include <iostream>
 
-
-void AdministradorBinario::registrarMovimiento(const string& cedula, const string& tipoMovimiento, double monto, const string& fecha, double saldoFinal) {
-    ofstream archivo("movimientos.bin", ios::binary | ios::app);
+void AdministradorBinario::registrarMovimiento(const std::string& cedula, const std::string& tipoMovimiento, 
+                                             double monto, const std::string& fecha, double saldoFinal) {
+    std::ofstream archivo("movimientos.bin", std::ios::binary | std::ios::app);
     if (!archivo) {
-        cerr << "Error al abrir archivo binario para registrar movimiento.\n";
+        std::cerr << "Error al abrir el archivo binario para registrar movimiento." << std::endl;
         return;
     }
-
 
     Movimiento mov;
     mov.cedula = cedula;
@@ -18,6 +17,22 @@ void AdministradorBinario::registrarMovimiento(const string& cedula, const strin
     mov.fecha = fecha;
     mov.saldoFinal = saldoFinal;
 
-    archivo.write(reinterpret_cast<const char*>(&mov), sizeof(Movimiento));
+    size_t tamCedula = mov.cedula.size();
+    size_t tamTipo = mov.tipoMovimiento.size();
+    size_t tamFecha = mov.fecha.size();
+
+    archivo.write(reinterpret_cast<char*>(&tamCedula), sizeof(tamCedula));
+    archivo.write(mov.cedula.c_str(), tamCedula);
+
+    archivo.write(reinterpret_cast<char*>(&tamTipo), sizeof(tamTipo));
+    archivo.write(mov.tipoMovimiento.c_str(), tamTipo);
+
+    archivo.write(reinterpret_cast<char*>(&mov.monto), sizeof(mov.monto));
+
+    archivo.write(reinterpret_cast<char*>(&tamFecha), sizeof(tamFecha));
+    archivo.write(mov.fecha.c_str(), tamFecha);
+
+    archivo.write(reinterpret_cast<char*>(&mov.saldoFinal), sizeof(mov.saldoFinal));
+
     archivo.close();
 }

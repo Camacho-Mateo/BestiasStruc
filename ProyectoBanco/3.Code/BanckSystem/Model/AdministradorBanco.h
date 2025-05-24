@@ -14,8 +14,8 @@ private:
 
 public:
     AdministradorBanco(Buscador* buscadorAhorro, Buscador* buscadorCorriente,
-                       Lector* lectorAhorro, Lector* lectorCorriente);
-
+                     Lector* lectorAhorro, Lector* lectorCorriente);
+    
     void buscarPorCedula(const std::string& cedula);
     void buscarPorNumeroCuenta();
 };

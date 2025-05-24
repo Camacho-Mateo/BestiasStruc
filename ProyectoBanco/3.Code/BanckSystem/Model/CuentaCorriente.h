@@ -2,31 +2,35 @@
 #define CUENTACORRIENTE_H
 
 #include <string>
-using namespace std;
+#include <vector>
+#include <cstddef> // Para size_t
 
 class CuentaCorriente {
 private:
-    string** datos;
-    double* saldos;
-    int filas;
-    int columnas;
-
-    void resize(int nuevaCantidad);
+    struct Cuenta {
+        std::string cedula;
+        std::string nombre;
+        std::string numeroCuenta;
+        double saldo;
+    };
+    
+    std::vector<Cuenta> cuentas;
+    static size_t contadorCuentas;
 
 public:
     CuentaCorriente();
-    ~CuentaCorriente();
-
-    int getTotalCuentas();
-
-    string getCedula(int fila);
-    string getNombre(int fila);
-    int getNumeroCuenta(int fila);
-    double getSaldo(int fila);
-
-    void setSaldo(int fila, double nuevoSaldo);
-
-    void agregarCuenta(const string& cedula, const string& nombre, int numeroCuenta, double saldo);
+    
+    size_t getTotalCuentas() const;
+    std::string getCedula(size_t index) const;
+    std::string getNombre(size_t index) const;
+    std::string getNumeroCuentaStr(size_t index) const;
+    double getSaldo(size_t index) const;
+    
+    void setSaldo(size_t index, double nuevoSaldo);
+    void agregarCuenta(const std::string& cedula, const std::string& nombre, 
+                      const std::string& numeroCuenta, double saldoInicial);
+    
+    std::string generarNumeroCuenta();
 };
 
 #endif

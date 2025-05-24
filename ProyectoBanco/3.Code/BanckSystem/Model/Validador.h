@@ -5,16 +5,12 @@
 #include <regex>
 #include <stdexcept>
 
-using namespace std;
-
 class Validador {
 public:
-    static void validar(const string& texto, const string& tipo);
-
+    static void validar(const std::string& texto, const std::string& tipo);
+    
 private:
-    static bool validarCedulaEcuatoriana(const string& cedula);
+    static bool validarCedulaEcuatoriana(const std::string& cedula);
 };
 
 #endif
-
-

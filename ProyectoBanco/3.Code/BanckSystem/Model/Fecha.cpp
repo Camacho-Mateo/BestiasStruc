@@ -2,9 +2,7 @@
 #include <iostream>
 #include <cstring>
 #include <conio.h>
-#include <cctype> 
-
-using namespace std;
+#include <cctype>
 
 Fecha::Fecha() {
     fechaNacimiento = new char[11];
@@ -16,28 +14,30 @@ Fecha::~Fecha() {
 }
 
 void Fecha::pedirFecha() {
-    cout << "Ingrese la fecha de nacimiento (DD/MM/AAAA): ";
+    std::cout << "Formato DD/MM/AAAA: ";
     char entrada[11] = "";
     int pos = 0;
 
     while (pos < 10) {
-        char c = getch();
+        char c = _getch();
 
-        // Validar posiciones específicas
         if ((pos == 2 || pos == 5) && c == '/') {
-            cout << c;
+            std::cout << c;
             entrada[pos++] = c;
-        } else if (isdigit(c) && pos != 2 && pos != 5) {
-            cout << c;
+        } 
+        else if (isdigit(c) && pos != 2 && pos != 5) {
+            std::cout << c;
             entrada[pos++] = c;
-        } else if (c == 8 && pos > 0) {
+        }
+        else if (c == 8 && pos > 0) { // Backspace
             pos--;
-            cout << "\b \b";
+            std::cout << "\b \b";
         }
     }
 
     entrada[10] = '\0';
     strcpy(fechaNacimiento, entrada);
+    std::cout << std::endl;
 }
 
 const char* Fecha::getFecha() const {

@@ -1,53 +1,50 @@
 #include "AdministradorBanco.h"
 #include <iostream>
 
-using namespace std;
-
 AdministradorBanco::AdministradorBanco(Buscador* buscadorAhorro, Buscador* buscadorCorriente,
-                                       Lector* lectorAhorro, Lector* lectorCorriente) {
-    this->buscadorAhorro = buscadorAhorro;
-    this->buscadorCorriente = buscadorCorriente;
-    this->lectorAhorro = lectorAhorro;
-    this->lectorCorriente = lectorCorriente;
-}
+                                     Lector* lectorAhorro, Lector* lectorCorriente)
+    : buscadorAhorro(buscadorAhorro), buscadorCorriente(buscadorCorriente),
+      lectorAhorro(lectorAhorro), lectorCorriente(lectorCorriente) {}
 
-void AdministradorBanco::buscarPorCedula(const string& cedula) {
-    cout << "Buscando cuentas asociadas a la cédula: " << cedula << endl;
-
-    int filaAhorro = buscadorAhorro->buscarPorCedula(cedula);
-    int filaCorriente = buscadorCorriente->buscarPorCedula(cedula);
-
-    if (filaAhorro == -1 && filaCorriente == -1) {
-        cout << "No se encontraron cuentas asociadas a esta cédula.\n";
-        return;
+void AdministradorBanco::buscarPorCedula(const std::string& cedula) {
+    std::cout << "\n=== Resultados de búsqueda para cédula: " << cedula << " ===\n";
+    
+    bool encontrado = false;
+    
+    // Buscar en cuentas de ahorro
+    int posAhorro = buscadorAhorro->buscarPorCedula(cedula, true);
+    if (posAhorro != -1) {
+        lectorAhorro->mostrarDatosPorCedula(cedula, true);
+        encontrado = true;
     }
-
-    if (filaAhorro != -1) {
-        cout << "\n--- Cuenta de Ahorro ---\n";
-        lectorAhorro->mostrarDatosPorCedula(cedula);
+    
+    // Buscar en cuentas corrientes
+    int posCorriente = buscadorCorriente->buscarPorCedula(cedula, false);
+    if (posCorriente != -1) {
+        lectorCorriente->mostrarDatosPorCedula(cedula, false);
+        encontrado = true;
     }
-
-    if (filaCorriente != -1) {
-        cout << "\n--- Cuenta Corriente ---\n";
-        lectorCorriente->mostrarDatosPorCedula(cedula);
+    
+    if (!encontrado) {
+        std::cout << "No se encontraron cuentas asociadas a esta cédula.\n";
     }
 }
 
 void AdministradorBanco::buscarPorNumeroCuenta() {
-    string tipo, numero;
-
-    cout << "¿Qué tipo de cuenta desea consultar? (1 = Ahorro, 2 = Corriente): ";
-    int opcion;
-    cin >> opcion;
-
-    cout << "Ingrese el número de cuenta: ";
-    cin >> numero;
-
-    if (opcion == 1) {
-        lectorAhorro->mostrarDatosPorCuenta(numero);
-    } else if (opcion == 2) {
-        lectorCorriente->mostrarDatosPorCuenta(numero);
+    std::string numeroCuenta;
+    int tipoCuenta;
+    
+    std::cout << "\n=== Búsqueda por número de cuenta ===\n";
+    std::cout << "Tipo de cuenta (1: Ahorro, 2: Corriente): ";
+    std::cin >> tipoCuenta;
+    std::cout << "Número de cuenta: ";
+    std::cin >> numeroCuenta;
+    
+    if (tipoCuenta == 1) {
+        lectorAhorro->mostrarDatosPorCuenta(numeroCuenta, true);
+    } else if (tipoCuenta == 2) {
+        lectorCorriente->mostrarDatosPorCuenta(numeroCuenta, false);
     } else {
-        cout << "Opción inválida.\n";
+        std::cout << "Tipo de cuenta inválido.\n";
     }
 }

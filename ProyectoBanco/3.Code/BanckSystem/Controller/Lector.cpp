@@ -1,46 +1,35 @@
 #include "Lector.h"
 #include <iostream>
 
-Lector::Lector(Buscador* buscador) {
-    this->buscador = buscador;
-}
+Lector::Lector(CuentaAhorro* ca, CuentaCorriente* cc, Buscador* b)
+    : cuentaAhorro(ca), cuentaCorriente(cc), buscador(b) {}
 
-void Lector::mostrarDatosPorCuenta(const string& numeroCuenta) {
-    int fila = buscador->buscarPorCuenta(numeroCuenta);
-    if (fila == -1) {
-        cout << "Cuenta no encontrada.\n";
+void Lector::mostrarDatosPorCuenta(const std::string& numeroCuenta, bool esAhorro) {
+    int pos = buscador->buscarPorCuenta(numeroCuenta, esAhorro);
+    if (pos == -1) {
+        std::cout << "Cuenta no encontrada." << std::endl;
         return;
     }
 
-
-    auto datos = buscador->obtenerDatosPorFila(fila);
-
-    cout << "Datos de la cuenta:\n";
-    cout << "Número de cuenta: " << datos.numeroCuenta << "\n";
-    cout << "Nombre: " << datos.persona.getNombre() << "\n";
-    cout << "Apellido: " << datos.persona.getApellido() << "\n";
-    cout << "Cédula: " << datos.persona.getCedula() << "\n";
-    cout << "Correo: " << datos.persona.getCorreo() << "\n";
-    cout << "Teléfono: " << datos.persona.getTelefono() << "\n";
-    cout << "Saldo: " << datos.saldo << "\n";
+    std::cout << "\n=== Datos de la Cuenta ===\n";
+    std::cout << "Tipo: " << (esAhorro ? "Ahorro" : "Corriente") << "\n";
+    std::cout << "Número: " << numeroCuenta << "\n";
+    std::cout << "Cédula: " << (esAhorro ? cuentaAhorro->getCedula(pos) : cuentaCorriente->getCedula(pos)) << "\n";
+    std::cout << "Nombre: " << (esAhorro ? cuentaAhorro->getNombre(pos) : cuentaCorriente->getNombre(pos)) << "\n";
+    std::cout << "Saldo: $" << (esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos)) << "\n";
 }
 
-void Lector::mostrarDatosPorCedula(const string& cedula) {
-    int fila = buscador->buscarPorCedula(cedula);
-    if (fila == -1) {
-        cout << "Usuario no encontrado.\n";
+void Lector::mostrarDatosPorCedula(const std::string& cedula, bool esAhorro) {
+    int pos = buscador->buscarPorCedula(cedula, esAhorro);
+    if (pos == -1) {
+        std::cout << "Cliente no encontrado." << std::endl;
         return;
     }
 
-    auto datos = buscador->obtenerDatosPorFila(fila);
-
-    cout << "Datos del usuario:\n";
-    cout << "Número de cuenta: " << datos.numeroCuenta << "\n";
-    cout << "Nombre: " << datos.persona.getNombre() << "\n";
-    cout << "Apellido: " << datos.persona.getApellido() << "\n";
-    cout << "Cédula: " << datos.persona.getCedula() << "\n";
-    cout << "Correo: " << datos.persona.getCorreo() << "\n";
-    cout << "Teléfono: " << datos.persona.getTelefono() << "\n";
-    cout << "Saldo: " << datos.saldo << "\n";
+    std::cout << "\n=== Datos del Cliente ===\n";
+    std::cout << "Tipo Cuenta: " << (esAhorro ? "Ahorro" : "Corriente") << "\n";
+    std::cout << "Cédula: " << cedula << "\n";
+    std::cout << "Nombre: " << (esAhorro ? cuentaAhorro->getNombre(pos) : cuentaCorriente->getNombre(pos)) << "\n";
+    std::cout << "Número Cuenta: " << (esAhorro ? cuentaAhorro->getNumeroCuentaStr(pos) : cuentaCorriente->getNumeroCuentaStr(pos)) << "\n";
+    std::cout << "Saldo: $" << (esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos)) << "\n";
 }
-

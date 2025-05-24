@@ -1,94 +1,61 @@
 #include "CuentaCorriente.h"
-#include <iostream>
+#include <sstream>
+#include <iomanip>
 
-CuentaCorriente::CuentaCorriente() {
-    filas = 0;
-    columnas = 3; // cedula, nombre, numeroCuenta (como string)
-    datos = nullptr;
-    saldos = nullptr;
+size_t CuentaCorriente::contadorCuentas = 2000;
+
+CuentaCorriente::CuentaCorriente() {}
+
+size_t CuentaCorriente::getTotalCuentas() const {
+    return cuentas.size();
 }
 
-CuentaCorriente::~CuentaCorriente() {
-    if (datos != nullptr) {
-        for (int i = 0; i < filas; i++) {
-            delete[] datos[i];
-        }
-        delete[] datos;
+std::string CuentaCorriente::getCedula(size_t index) const {
+    if (index < cuentas.size()) {
+        return cuentas[index].cedula;
     }
-    delete[] saldos;
+    return "";
 }
 
-void CuentaCorriente::resize(int nuevaCantidad) {
-    string** tempDatos = new string*[nuevaCantidad];
-    double* tempSaldos = new double[nuevaCantidad];
-
-    for (int i = 0; i < nuevaCantidad; i++) {
-        tempDatos[i] = new string[columnas];
-        if (i < filas) {
-            for (int j = 0; j < columnas; j++) {
-                tempDatos[i][j] = datos[i][j];
-            }
-            tempSaldos[i] = saldos[i];
-        } else {
-            for (int j = 0; j < columnas; j++) {
-                tempDatos[i][j] = "";
-            }
-            tempSaldos[i] = 0.0;
-        }
+std::string CuentaCorriente::getNombre(size_t index) const {
+    if (index < cuentas.size()) {
+        return cuentas[index].nombre;
     }
+    return "";
+}
 
-    if (datos != nullptr) {
-        for (int i = 0; i < filas; i++) {
-            delete[] datos[i];
-        }
-        delete[] datos;
+std::string CuentaCorriente::getNumeroCuentaStr(size_t index) const {
+    if (index < cuentas.size()) {
+        return cuentas[index].numeroCuenta;
     }
-    delete[] saldos;
-
-    datos = tempDatos;
-    saldos = tempSaldos;
-    filas = nuevaCantidad;
+    return "";
 }
 
-int CuentaCorriente::getTotalCuentas() {
-    return filas;
+double CuentaCorriente::getSaldo(size_t index) const {
+    if (index < cuentas.size()) {
+        return cuentas[index].saldo;
+    }
+    return -1;
 }
 
-string CuentaCorriente::getCedula(int fila) {
-    if (fila >= 0 && fila < filas) return datos[fila][0];
-    else return "";
-}
-
-string CuentaCorriente::getNombre(int fila) {
-    if (fila >= 0 && fila < filas) return datos[fila][1];
-    else return "";
-}
-
-int CuentaCorriente::getNumeroCuenta(int fila) {
-    if (fila >= 0 && fila < filas) {
-        try {
-            return stoi(datos[fila][2]);
-        } catch (...) {
-            return -1;
-        }
-    } else return -1;
-}
-
-double CuentaCorriente::getSaldo(int fila) {
-    if (fila >= 0 && fila < filas) return saldos[fila];
-    else return -1;
-}
-
-void CuentaCorriente::setSaldo(int fila, double nuevoSaldo) {
-    if (fila >= 0 && fila < filas) {
-        saldos[fila] = nuevoSaldo;
+void CuentaCorriente::setSaldo(size_t index, double nuevoSaldo) {
+    if (index < cuentas.size()) {
+        cuentas[index].saldo = nuevoSaldo;
     }
 }
 
-void CuentaCorriente::agregarCuenta(const string& cedula, const string& nombre, int numeroCuenta, double saldo) {
-    resize(filas + 1);
-    datos[filas - 1][0] = cedula;
-    datos[filas - 1][1] = nombre;
-    datos[filas - 1][2] = to_string(numeroCuenta);
-    saldos[filas - 1] = saldo;
+void CuentaCorriente::agregarCuenta(const std::string& cedula, const std::string& nombre, 
+                                  const std::string& numeroCuenta, double saldoInicial) {
+    Cuenta nueva;
+    nueva.cedula = cedula;
+    nueva.nombre = nombre;
+    nueva.numeroCuenta = numeroCuenta;
+    nueva.saldo = saldoInicial;
+    cuentas.push_back(nueva);
+}
+
+std::string CuentaCorriente::generarNumeroCuenta() {
+    std::ostringstream oss;
+    oss << "CC" << std::setw(8) << std::setfill('0') << ++contadorCuentas;
+    return oss.str();
 }

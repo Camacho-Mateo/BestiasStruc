@@ -1,65 +1,92 @@
 #include "Cajero.h"
 #include <iostream>
 
-Cajero::Cajero(Buscador* buscador) : buscador(buscador) {}
+using namespace std;
 
-bool Cajero::depositar(const string& cedula, bool esAhorro, double monto) {
-    int pos = buscador->buscarPorCedula(cedula, esAhorro);
+Cajero::Cajero(CuentaAhorro* ca, CuentaCorriente* cc, Buscador* b) 
+    : cuentaAhorro(ca), cuentaCorriente(cc), buscador(b) {}
+
+bool Cajero::depositar(bool esAhorro, const string& numeroCuenta, double monto) {
+    int pos = buscador->buscarPorCuenta(numeroCuenta, esAhorro);
     if (pos == -1) {
-        cout << "Cuenta no encontrada para deposito." << endl;
+        cerr << "Error: Cuenta no encontrada" << endl;
         return false;
     }
-    double saldoActual = esAhorro ? buscador->cuentaAhorro->getSaldo(pos) : buscador->cuentaCorriente->getSaldo(pos);
-    double nuevoSaldo = saldoActual + monto;
-
+    
     if (esAhorro) {
-        buscador->cuentaAhorro->setSaldo(pos, nuevoSaldo);
+        cuentaAhorro->setSaldo(pos, cuentaAhorro->getSaldo(pos) + monto);
     } else {
-        buscador->cuentaCorriente->setSaldo(pos, nuevoSaldo);
+        cuentaCorriente->setSaldo(pos, cuentaCorriente->getSaldo(pos) + monto);
     }
     return true;
 }
 
-bool Cajero::retirar(const string& cedula, bool esAhorro, double monto) {
-    int pos = buscador->buscarPorCedula(cedula, esAhorro);
+bool Cajero::retirar(bool esAhorro, const string& numeroCuenta, double monto) {
+    int pos = buscador->buscarPorCuenta(numeroCuenta, esAhorro);
     if (pos == -1) {
-        cout << "Cuenta no encontrada para retiro." << endl;
+        cerr << "Error: Cuenta no encontrada" << endl;
         return false;
     }
-    double saldoActual = esAhorro ? buscador->cuentaAhorro->getSaldo(pos) : buscador->cuentaCorriente->getSaldo(pos);
+
+    double saldoActual = esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos);
     if (saldoActual < monto) {
-        cout << "Saldo insuficiente." << endl;
+        cerr << "Error: Saldo insuficiente" << endl;
         return false;
     }
 
-    double nuevoSaldo = saldoActual - monto;
     if (esAhorro) {
-        buscador->cuentaAhorro->setSaldo(pos, nuevoSaldo);
+        cuentaAhorro->setSaldo(pos, saldoActual - monto);
     } else {
-        buscador->cuentaCorriente->setSaldo(pos, nuevoSaldo);
+        cuentaCorriente->setSaldo(pos, saldoActual - monto);
     }
     return true;
 }
 
-bool Cajero::transferir(const string& cedulaOrigen, bool esAhorroOrigen, const string& cedulaDestino, bool esAhorroDestino, double monto) {
-    if (!retirar(cedulaOrigen, esAhorroOrigen, monto)) {
-        cout << "No se pudo retirar el dinero para la transferencia." << endl;
+bool Cajero::transferir(bool esAhorroOrigen, const string& cuentaOrigen, 
+                       const string& cedula, bool esAhorroDestino, 
+                       const string& cuentaDestino, double monto) {
+    int posOrigen = buscador->buscarPorCuenta(cuentaOrigen, esAhorroOrigen);
+    if (posOrigen == -1) {
+        cerr << "Error: Cuenta origen no existe" << endl;
         return false;
     }
-    if (!depositar(cedulaDestino, esAhorroDestino, monto)) {
-        cout << "No se pudo depositar el dinero en la cuenta destino. Revirtiendo." << endl;
-        depositar(cedulaOrigen, esAhorroOrigen, monto);
+
+    string cedulaTitular = esAhorroOrigen ? 
+        cuentaAhorro->getCedula(posOrigen) : 
+        cuentaCorriente->getCedula(posOrigen);
+    
+    if (cedulaTitular != cedula) {
+        cerr << "Error: La cédula no coincide con el titular" << endl;
         return false;
     }
+
+    if (!retirar(esAhorroOrigen, cuentaOrigen, monto)) {
+        return false;
+    }
+
+    if (!depositar(esAhorroDestino, cuentaDestino, monto)) {
+        depositar(esAhorroOrigen, cuentaOrigen, monto);
+        return false;
+    }
+
     return true;
 }
 
-double Cajero::consultarSaldo(const string& cedula, bool esAhorro) {
-    int pos = buscador->buscarPorCedula(cedula, esAhorro);
+double Cajero::consultarSaldo(bool esAhorro, const string& numeroCuenta, const string& cedula) {
+    int pos = buscador->buscarPorCuenta(numeroCuenta, esAhorro);
     if (pos == -1) {
-        cout << "Cuenta no encontrada para consulta." << endl;
-        return -1;
+        cerr << "Error: Cuenta no encontrada" << endl;
+        return -1.0;
     }
-    return esAhorro ? buscador->cuentaAhorro->getSaldo(pos) : buscador->cuentaCorriente->getSaldo(pos);
-}
+    
+    string cedulaTitular = esAhorro ? 
+        cuentaAhorro->getCedula(pos) : 
+        cuentaCorriente->getCedula(pos);
+    
+    if (cedulaTitular != cedula) {
+        cerr << "Error: La cédula no coincide con el titular" << endl;
+        return -1.0;
+    }
 
+    return esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos);
+}

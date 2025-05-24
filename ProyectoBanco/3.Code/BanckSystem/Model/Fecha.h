@@ -8,8 +8,8 @@ private:
 public:
     Fecha();
     ~Fecha();
-
-    void pedirFecha(); 
+    
+    void pedirFecha();
     const char* getFecha() const;
 };
 

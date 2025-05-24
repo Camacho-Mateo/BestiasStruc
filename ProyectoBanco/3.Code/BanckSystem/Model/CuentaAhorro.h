@@ -2,31 +2,36 @@
 #define CUENTAAHORRO_H
 
 #include <string>
+#include <vector>
+
 using namespace std;
 
 class CuentaAhorro {
 private:
-    string** datos;     // Matriz dinámica: cada fila una cuenta, columnas con datos
-    double* saldos;     // Arreglo dinámico con saldos por cuenta
-    int filas;          // Número de cuentas actuales
-    int columnas;       // Número de columnas (atributos)
-
-    void resize(int nuevaCantidad);
+    struct Cuenta {
+        string cedula;
+        string nombre;
+        string numeroCuenta;
+        double saldo;
+    };
+    
+    vector<Cuenta> cuentas;
+    static size_t contadorCuentas;
 
 public:
     CuentaAhorro();
-    ~CuentaAhorro();
-
-    int getTotalCuentas();
-
-    string getCedula(int fila);
-    string getNombre(int fila);
-    int getNumeroCuenta(int fila);
-    double getSaldo(int fila);
-
-    void setSaldo(int fila, double nuevoSaldo);
-
-    void agregarCuenta(const string& cedula, const string& nombre, int numeroCuenta, double saldo);
+    
+    size_t getTotalCuentas() const;
+    string getCedula(size_t index) const;
+    string getNombre(size_t index) const;
+    string getNumeroCuentaStr(size_t index) const;
+    double getSaldo(size_t index) const;
+    
+    void setSaldo(size_t index, double nuevoSaldo);
+    void agregarCuenta(const string& cedula, const string& nombre, 
+                      const string& numeroCuenta, double saldoInicial);
+    
+    string generarNumeroCuenta();
 };
 
 #endif
