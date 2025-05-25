@@ -11,8 +11,8 @@ private:
     CuentaCorriente* cuentaCorriente;
 
 public:
-    Buscador(CuentaAhorro* ahorro, CuentaCorriente* corriente);
-    
+    Buscador(CuentaAhorro* ca, CuentaCorriente* cc);
+
     int buscarPorCedula(const std::string& cedula, bool esAhorro);
     int buscarPorNombre(const std::string& nombre, bool esAhorro);
     int buscarPorCuenta(const std::string& numeroCuenta, bool esAhorro);

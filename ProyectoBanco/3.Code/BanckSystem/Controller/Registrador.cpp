@@ -4,6 +4,7 @@
 #include "../Model/Validador.h"
 #include <iostream>
 #include <string>
+#include <limits>
 
 Registrador::Registrador(CuentaAhorro* ca, CuentaCorriente* cc)
     : cuentaAhorro(ca), cuentaCorriente(cc) {}
@@ -12,7 +13,6 @@ void Registrador::registrar() {
     std::string cedula, nombre, apellido, correo, telefono;
     Fecha fechaNacimiento;
 
-    // Validación de cédula
     while (true) {
         try {
             std::cout << "Ingrese la cédula: ";
@@ -24,11 +24,11 @@ void Registrador::registrar() {
         }
     }
 
-    // Validación de nombre
+    std::cin.ignore();
+
     while (true) {
         try {
             std::cout << "Ingrese el nombre: ";
-            std::cin.ignore();
             std::getline(std::cin, nombre);
             Validador::validar(nombre, "nombre");
             break;
@@ -37,7 +37,6 @@ void Registrador::registrar() {
         }
     }
 
-    // Validación de apellido
     while (true) {
         try {
             std::cout << "Ingrese el apellido: ";
@@ -49,7 +48,6 @@ void Registrador::registrar() {
         }
     }
 
-    // Validación de correo
     while (true) {
         try {
             std::cout << "Ingrese el correo: ";
@@ -61,7 +59,6 @@ void Registrador::registrar() {
         }
     }
 
-    // Validación de teléfono
     while (true) {
         try {
             std::cout << "Ingrese el teléfono: ";
@@ -82,15 +79,34 @@ void Registrador::registrar() {
     std::cout << "Tipo de cuenta (1: Ahorro, 2: Corriente): ";
     std::cin >> tipoCuenta;
 
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
     if (tipoCuenta == 1) {
-        cuentaAhorro->agregarCuenta(persona.getCedula(), persona.getNombre(), 
-                                   cuentaAhorro->generarNumeroCuenta(), 0.0);
+        cuentaAhorro->agregarCuenta(
+            persona.getCedula(),
+            persona.getNombre(),
+            cuentaAhorro->generarNumeroCuenta(),
+            0.0
+        );
         std::cout << "Cuenta de ahorro registrada exitosamente.\n";
+
+        administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
+
     } else if (tipoCuenta == 2) {
-        cuentaCorriente->agregarCuenta(persona.getCedula(), persona.getNombre(), 
-                                      cuentaCorriente->generarNumeroCuenta(), 0.0);
+        cuentaCorriente->agregarCuenta(
+            persona.getCedula(),
+            persona.getNombre(),
+            cuentaCorriente->generarNumeroCuenta(),
+            0.0
+        );
         std::cout << "Cuenta corriente registrada exitosamente.\n";
+
+        administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
+
     } else {
         std::cout << "Tipo de cuenta inválido.\n";
     }
+
+    std::cout << "\nPresione Enter para continuar...";
+    std::cin.get();
 }

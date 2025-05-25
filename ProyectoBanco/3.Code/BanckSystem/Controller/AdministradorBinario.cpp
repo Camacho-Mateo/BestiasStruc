@@ -1,38 +1,124 @@
 #include "AdministradorBinario.h"
-#include <fstream>
 #include <iostream>
+#include <fstream>
 
-void AdministradorBinario::registrarMovimiento(const std::string& cedula, const std::string& tipoMovimiento, 
-                                             double monto, const std::string& fecha, double saldoFinal) {
-    std::ofstream archivo("movimientos.bin", std::ios::binary | std::ios::app);
+void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, const CuentaCorriente& cuentaCorriente) {
+    std::ofstream archivo("./cuentas.bin", std::ios::binary);
     if (!archivo) {
-        std::cerr << "Error al abrir el archivo binario para registrar movimiento." << std::endl;
+        std::cerr << "Error al abrir archivo para guardar cuentas." << std::endl;
         return;
     }
 
-    Movimiento mov;
-    mov.cedula = cedula;
-    mov.tipoMovimiento = tipoMovimiento;
-    mov.monto = monto;
-    mov.fecha = fecha;
-    mov.saldoFinal = saldoFinal;
+    std::cout << "[DEBUG] Guardando cuentas en ./cuentas.bin..." << std::endl;
 
-    size_t tamCedula = mov.cedula.size();
-    size_t tamTipo = mov.tipoMovimiento.size();
-    size_t tamFecha = mov.fecha.size();
+    size_t totalAhorro = cuentaAhorro.getTotalCuentas();
+    archivo.write(reinterpret_cast<const char*>(&totalAhorro), sizeof(totalAhorro));
+    for (size_t i = 0; i < totalAhorro; ++i) {
+        std::string ced = cuentaAhorro.getCedula(i);
+        size_t tam = ced.size();
+        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+        archivo.write(ced.c_str(), tam);
 
-    archivo.write(reinterpret_cast<char*>(&tamCedula), sizeof(tamCedula));
-    archivo.write(mov.cedula.c_str(), tamCedula);
+        std::string nom = cuentaAhorro.getNombre(i);
+        tam = nom.size();
+        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+        archivo.write(nom.c_str(), tam);
 
-    archivo.write(reinterpret_cast<char*>(&tamTipo), sizeof(tamTipo));
-    archivo.write(mov.tipoMovimiento.c_str(), tamTipo);
+        std::string num = cuentaAhorro.getNumeroCuentaStr(i);
+        tam = num.size();
+        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+        archivo.write(num.c_str(), tam);
 
-    archivo.write(reinterpret_cast<char*>(&mov.monto), sizeof(mov.monto));
+        double saldo = cuentaAhorro.getSaldo(i);
+        archivo.write(reinterpret_cast<const char*>(&saldo), sizeof(saldo));
+    }
 
-    archivo.write(reinterpret_cast<char*>(&tamFecha), sizeof(tamFecha));
-    archivo.write(mov.fecha.c_str(), tamFecha);
+    size_t totalCorriente = cuentaCorriente.getTotalCuentas();
+    archivo.write(reinterpret_cast<const char*>(&totalCorriente), sizeof(totalCorriente));
+    for (size_t i = 0; i < totalCorriente; ++i) {
+        std::string ced = cuentaCorriente.getCedula(i);
+        size_t tam = ced.size();
+        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+        archivo.write(ced.c_str(), tam);
 
-    archivo.write(reinterpret_cast<char*>(&mov.saldoFinal), sizeof(mov.saldoFinal));
+        std::string nom = cuentaCorriente.getNombre(i);
+        tam = nom.size();
+        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+        archivo.write(nom.c_str(), tam);
+
+        std::string num = cuentaCorriente.getNumeroCuentaStr(i);
+        tam = num.size();
+        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+        archivo.write(num.c_str(), tam);
+
+        double saldo = cuentaCorriente.getSaldo(i);
+        archivo.write(reinterpret_cast<const char*>(&saldo), sizeof(saldo));
+    }
 
     archivo.close();
+    std::cout << "[DEBUG] Archivo cuentas.bin guardado con éxito." << std::endl;
+}
+
+void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorriente& cuentaCorriente) {
+    std::ifstream archivo("./cuentas.bin", std::ios::binary);
+    if (!archivo) {
+        std::cerr << "No se pudo abrir archivo para cargar cuentas desde ./cuentas.bin." << std::endl;
+        return;
+    }
+
+    std::cout << "[DEBUG] Cargando cuentas desde ./cuentas.bin..." << std::endl;
+
+    cuentaAhorro = CuentaAhorro();
+    cuentaCorriente = CuentaCorriente();
+
+    size_t totalAhorro = 0;
+    archivo.read(reinterpret_cast<char*>(&totalAhorro), sizeof(totalAhorro));
+    for (size_t i = 0; i < totalAhorro; ++i) {
+        std::string cedula, nombre, numeroCuenta;
+        double saldo;
+
+        size_t tam;
+        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
+        cedula.resize(tam);
+        archivo.read(&cedula[0], tam);
+
+        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
+        nombre.resize(tam);
+        archivo.read(&nombre[0], tam);
+
+        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
+        numeroCuenta.resize(tam);
+        archivo.read(&numeroCuenta[0], tam);
+
+        archivo.read(reinterpret_cast<char*>(&saldo), sizeof(saldo));
+
+        cuentaAhorro.agregarCuenta(cedula, nombre, numeroCuenta, saldo);
+    }
+
+    size_t totalCorriente = 0;
+    archivo.read(reinterpret_cast<char*>(&totalCorriente), sizeof(totalCorriente));
+    for (size_t i = 0; i < totalCorriente; ++i) {
+        std::string cedula, nombre, numeroCuenta;
+        double saldo;
+
+        size_t tam;
+        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
+        cedula.resize(tam);
+        archivo.read(&cedula[0], tam);
+
+        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
+        nombre.resize(tam);
+        archivo.read(&nombre[0], tam);
+
+        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
+        numeroCuenta.resize(tam);
+        archivo.read(&numeroCuenta[0], tam);
+
+        archivo.read(reinterpret_cast<char*>(&saldo), sizeof(saldo));
+
+        cuentaCorriente.agregarCuenta(cedula, nombre, numeroCuenta, saldo);
+    }
+
+    archivo.close();
+    std::cout << "[DEBUG] Archivo cuentas.bin cargado con éxito." << std::endl;
 }

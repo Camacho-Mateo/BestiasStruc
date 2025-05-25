@@ -3,19 +3,13 @@
 
 #include <string>
 #include <fstream>
-
-struct Movimiento {
-    std::string cedula;
-    std::string tipoMovimiento;
-    double monto;
-    std::string fecha;
-    double saldoFinal;
-};
+#include "../Model/CuentaAhorro.h"
+#include "../Model/CuentaCorriente.h"
 
 class AdministradorBinario {
 public:
-    void registrarMovimiento(const std::string& cedula, const std::string& tipoMovimiento, 
-                           double monto, const std::string& fecha, double saldoFinal);
+    void guardarCuentas(const CuentaAhorro& cuentaAhorro, const CuentaCorriente& cuentaCorriente);
+    void cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorriente& cuentaCorriente);
 };
 
 #endif
