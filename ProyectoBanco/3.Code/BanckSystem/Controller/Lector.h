@@ -7,11 +7,13 @@
 #include "../Model/CuentaCorriente.h"
 #include "Buscador.h"
 
+using namespace std;
+
 struct Movimiento {
-    std::string cedula;
-    std::string tipoMovimiento;
+    string cedula;
+    string tipoMovimiento;
     double monto;
-    std::string fecha;
+    string fecha;
     double saldoFinal;
 };
 
@@ -24,11 +26,10 @@ private:
 public:
     Lector(CuentaAhorro* ca, CuentaCorriente* cc, Buscador* b);
     
-    void mostrarDatosPorCuenta(const std::string& numeroCuenta, bool esAhorro);
-    void mostrarDatosPorCedula(const std::string& cedula, bool esAhorro);
+    void mostrarDatosPorCuenta(const string& numeroCuenta, bool esAhorro);
+    void mostrarDatosPorCedula(const string& cedula, bool esAhorro);
 
-    // Nuevo método para leer y mostrar movimientos guardados en archivo binario
-    std::vector<Movimiento> leerMovimientos();
+    vector<Movimiento> leerMovimientos();
     void mostrarMovimientos();
 };
 

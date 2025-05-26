@@ -6,80 +6,82 @@
 #include <string>
 #include <limits>
 
+using namespace std;
+
 Registrador::Registrador(CuentaAhorro* ca, CuentaCorriente* cc)
     : cuentaAhorro(ca), cuentaCorriente(cc) {}
 
 void Registrador::registrar() {
-    std::string cedula, nombre, apellido, correo, telefono;
+    string cedula, nombre, apellido, correo, telefono;
     Fecha fechaNacimiento;
 
     while (true) {
         try {
-            std::cout << "Ingrese la cédula: ";
-            std::cin >> cedula;
+            cout << "Ingrese la cédula: ";
+            cin >> cedula;
             Validador::validar(cedula, "cedula");
             break;
-        } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+        } catch (const invalid_argument& e) {
+            cout << e.what() << endl;
         }
     }
 
-    std::cin.ignore();
+    cin.ignore();
 
     while (true) {
         try {
-            std::cout << "Ingrese el nombre: ";
-            std::getline(std::cin, nombre);
+            cout << "Ingrese el nombre: ";
+            getline(cin, nombre);
             Validador::validar(nombre, "nombre");
             break;
-        } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+        } catch (const invalid_argument& e) {
+            cout << e.what() << endl;
         }
     }
 
     while (true) {
         try {
-            std::cout << "Ingrese el apellido: ";
-            std::getline(std::cin, apellido);
+            cout << "Ingrese el apellido: ";
+            getline(cin, apellido);
             Validador::validar(apellido, "apellido");
             break;
-        } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+        } catch (const invalid_argument& e) {
+            cout << e.what() << endl;
         }
     }
 
     while (true) {
         try {
-            std::cout << "Ingrese el correo: ";
-            std::getline(std::cin, correo);
+            cout << "Ingrese el correo: ";
+            getline(cin, correo);
             Validador::validar(correo, "correo");
             break;
-        } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+        } catch (const invalid_argument& e) {
+            cout << e.what() << endl;
         }
     }
 
     while (true) {
         try {
-            std::cout << "Ingrese el teléfono: ";
-            std::getline(std::cin, telefono);
+            cout << "Ingrese el teléfono: ";
+            getline(cin, telefono);
             Validador::validar(telefono, "telefono");
             break;
-        } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+        } catch (const invalid_argument& e) {
+            cout << e.what() << endl;
         }
     }
 
-    std::cout << "Ingrese la fecha de nacimiento (DD/MM/AAAA):\n";
+    cout << "Ingrese la fecha de nacimiento (DD/MM/AAAA):\n";
     fechaNacimiento.pedirFecha();
 
     Persona persona(cedula, nombre, apellido, correo, telefono, fechaNacimiento);
 
     int tipoCuenta;
-    std::cout << "Tipo de cuenta (1: Ahorro, 2: Corriente): ";
-    std::cin >> tipoCuenta;
+    cout << "Tipo de cuenta (1: Ahorro, 2: Corriente): ";
+    cin >> tipoCuenta;
 
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     if (tipoCuenta == 1) {
         cuentaAhorro->agregarCuenta(
@@ -88,7 +90,7 @@ void Registrador::registrar() {
             cuentaAhorro->generarNumeroCuenta(),
             0.0
         );
-        std::cout << "Cuenta de ahorro registrada exitosamente.\n";
+        cout << "Cuenta de ahorro registrada exitosamente.\n";
 
         administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
 
@@ -99,14 +101,14 @@ void Registrador::registrar() {
             cuentaCorriente->generarNumeroCuenta(),
             0.0
         );
-        std::cout << "Cuenta corriente registrada exitosamente.\n";
+        cout << "Cuenta corriente registrada exitosamente.\n";
 
         administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
 
     } else {
-        std::cout << "Tipo de cuenta inválido.\n";
+        cout << "Tipo de cuenta inválido.\n";
     }
 
-    std::cout << "\nPresione Enter para continuar...";
-    std::cin.get();
+    cout << "\nPresione Enter para continuar...";
+    cin.get();
 }

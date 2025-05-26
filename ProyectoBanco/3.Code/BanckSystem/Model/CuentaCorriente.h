@@ -3,34 +3,36 @@
 
 #include <string>
 #include <vector>
-#include <cstddef> // Para size_t
+#include <cstddef>
+
+using namespace std;
 
 class CuentaCorriente {
 private:
     struct Cuenta {
-        std::string cedula;
-        std::string nombre;
-        std::string numeroCuenta;
+        string cedula;
+        string nombre;
+        string numeroCuenta;
         double saldo;
     };
     
-    std::vector<Cuenta> cuentas;
+    vector<Cuenta> cuentas;
     static size_t contadorCuentas;
 
 public:
     CuentaCorriente();
     
     size_t getTotalCuentas() const;
-    std::string getCedula(size_t index) const;
-    std::string getNombre(size_t index) const;
-    std::string getNumeroCuentaStr(size_t index) const;
+    string getCedula(size_t index) const;
+    string getNombre(size_t index) const;
+    string getNumeroCuentaStr(size_t index) const;
     double getSaldo(size_t index) const;
     
     void setSaldo(size_t index, double nuevoSaldo);
-    void agregarCuenta(const std::string& cedula, const std::string& nombre, 
-                      const std::string& numeroCuenta, double saldoInicial);
+    void agregarCuenta(const string& cedula, const string& nombre, 
+                      const string& numeroCuenta, double saldoInicial);
     
-    std::string generarNumeroCuenta();
+    string generarNumeroCuenta();
 };
 
 #endif

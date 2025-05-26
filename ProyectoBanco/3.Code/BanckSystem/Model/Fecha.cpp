@@ -4,6 +4,8 @@
 #include <conio.h>
 #include <cctype>
 
+using namespace std;
+
 Fecha::Fecha() {
     fechaNacimiento = new char[11];
     strcpy(fechaNacimiento, "");
@@ -29,7 +31,7 @@ void Fecha::pedirFecha() {
             std::cout << c;
             entrada[pos++] = c;
         }
-        else if (c == 8 && pos > 0) { // Backspace
+        else if (c == 8 && pos > 0) {
             pos--;
             std::cout << "\b \b";
         }

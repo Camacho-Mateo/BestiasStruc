@@ -2,6 +2,8 @@
 #include <sstream>
 #include <iomanip>
 
+using namespace std;
+
 size_t CuentaCorriente::contadorCuentas = 2000;
 
 CuentaCorriente::CuentaCorriente() {}
@@ -10,21 +12,21 @@ size_t CuentaCorriente::getTotalCuentas() const {
     return cuentas.size();
 }
 
-std::string CuentaCorriente::getCedula(size_t index) const {
+string CuentaCorriente::getCedula(size_t index) const {
     if (index < cuentas.size()) {
         return cuentas[index].cedula;
     }
     return "";
 }
 
-std::string CuentaCorriente::getNombre(size_t index) const {
+string CuentaCorriente::getNombre(size_t index) const {
     if (index < cuentas.size()) {
         return cuentas[index].nombre;
     }
     return "";
 }
 
-std::string CuentaCorriente::getNumeroCuentaStr(size_t index) const {
+string CuentaCorriente::getNumeroCuentaStr(size_t index) const {
     if (index < cuentas.size()) {
         return cuentas[index].numeroCuenta;
     }
@@ -44,8 +46,8 @@ void CuentaCorriente::setSaldo(size_t index, double nuevoSaldo) {
     }
 }
 
-void CuentaCorriente::agregarCuenta(const std::string& cedula, const std::string& nombre, 
-                                  const std::string& numeroCuenta, double saldoInicial) {
+void CuentaCorriente::agregarCuenta(const string& cedula, const string& nombre, 
+                                  const string& numeroCuenta, double saldoInicial) {
     Cuenta nueva;
     nueva.cedula = cedula;
     nueva.nombre = nombre;
@@ -54,8 +56,8 @@ void CuentaCorriente::agregarCuenta(const std::string& cedula, const std::string
     cuentas.push_back(nueva);
 }
 
-std::string CuentaCorriente::generarNumeroCuenta() {
-    std::ostringstream oss;
-    oss << "CC" << std::setw(8) << std::setfill('0') << ++contadorCuentas;
+string CuentaCorriente::generarNumeroCuenta() {
+    ostringstream oss;
+    oss << "CC" << setw(8) << setfill('0') << ++contadorCuentas;
     return oss.str();
 }

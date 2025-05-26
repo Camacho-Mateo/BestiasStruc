@@ -2,44 +2,46 @@
 #include <iostream>
 #include <fstream>
 
+using namespace std;
+
 Lector::Lector(CuentaAhorro* ca, CuentaCorriente* cc, Buscador* b)
     : cuentaAhorro(ca), cuentaCorriente(cc), buscador(b) {}
 
-void Lector::mostrarDatosPorCuenta(const std::string& numeroCuenta, bool esAhorro) {
+void Lector::mostrarDatosPorCuenta(const string& numeroCuenta, bool esAhorro) {
     int pos = buscador->buscarPorCuenta(numeroCuenta, esAhorro);
     if (pos == -1) {
-        std::cout << "Cuenta no encontrada." << std::endl;
+        cout << "Cuenta no encontrada." << endl;
         return;
     }
 
-    std::cout << "\n=== Datos de la Cuenta ===\n";
-    std::cout << "Tipo: " << (esAhorro ? "Ahorro" : "Corriente") << "\n";
-    std::cout << "Número: " << numeroCuenta << "\n";
-    std::cout << "Cédula: " << (esAhorro ? cuentaAhorro->getCedula(pos) : cuentaCorriente->getCedula(pos)) << "\n";
-    std::cout << "Nombre: " << (esAhorro ? cuentaAhorro->getNombre(pos) : cuentaCorriente->getNombre(pos)) << "\n";
-    std::cout << "Saldo: $" << (esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos)) << "\n";
+    cout << "\n=== Datos de la Cuenta ===\n";
+    cout << "Tipo: " << (esAhorro ? "Ahorro" : "Corriente") << "\n";
+    cout << "Número: " << numeroCuenta << "\n";
+    cout << "Cédula: " << (esAhorro ? cuentaAhorro->getCedula(pos) : cuentaCorriente->getCedula(pos)) << "\n";
+    cout << "Nombre: " << (esAhorro ? cuentaAhorro->getNombre(pos) : cuentaCorriente->getNombre(pos)) << "\n";
+    cout << "Saldo: $" << (esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos)) << "\n";
 }
 
-void Lector::mostrarDatosPorCedula(const std::string& cedula, bool esAhorro) {
+void Lector::mostrarDatosPorCedula(const string& cedula, bool esAhorro) {
     int pos = buscador->buscarPorCedula(cedula, esAhorro);
     if (pos == -1) {
-        std::cout << "Cliente no encontrado." << std::endl;
+        cout << "Cliente no encontrado." << endl;
         return;
     }
 
-    std::cout << "\n=== Datos del Cliente ===\n";
-    std::cout << "Tipo Cuenta: " << (esAhorro ? "Ahorro" : "Corriente") << "\n";
-    std::cout << "Cédula: " << cedula << "\n";
-    std::cout << "Nombre: " << (esAhorro ? cuentaAhorro->getNombre(pos) : cuentaCorriente->getNombre(pos)) << "\n";
-    std::cout << "Número Cuenta: " << (esAhorro ? cuentaAhorro->getNumeroCuentaStr(pos) : cuentaCorriente->getNumeroCuentaStr(pos)) << "\n";
-    std::cout << "Saldo: $" << (esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos)) << "\n";
+    cout << "\n=== Datos del Cliente ===\n";
+    cout << "Tipo Cuenta: " << (esAhorro ? "Ahorro" : "Corriente") << "\n";
+    cout << "Cédula: " << cedula << "\n";
+    cout << "Nombre: " << (esAhorro ? cuentaAhorro->getNombre(pos) : cuentaCorriente->getNombre(pos)) << "\n";
+    cout << "Número Cuenta: " << (esAhorro ? cuentaAhorro->getNumeroCuentaStr(pos) : cuentaCorriente->getNumeroCuentaStr(pos)) << "\n";
+    cout << "Saldo: $" << (esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos)) << "\n";
 }
 
-std::vector<Movimiento> Lector::leerMovimientos() {
-    std::vector<Movimiento> movimientos;
-    std::ifstream archivo("movimientos.bin", std::ios::binary);
+vector<Movimiento> Lector::leerMovimientos() {
+    vector<Movimiento> movimientos;
+    ifstream archivo("movimientos.bin", ios::binary);
     if (!archivo) {
-        std::cerr << "No se pudo abrir el archivo de movimientos." << std::endl;
+        cerr << "No se pudo abrir el archivo de movimientos." << endl;
         return movimientos;  // vacío
     }
 
@@ -74,20 +76,20 @@ std::vector<Movimiento> Lector::leerMovimientos() {
 }
 
 void Lector::mostrarMovimientos() {
-    std::vector<Movimiento> movimientos = leerMovimientos();
+    vector<Movimiento> movimientos = leerMovimientos();
 
     if (movimientos.empty()) {
-        std::cout << "No hay movimientos registrados." << std::endl;
+        cout << "No hay movimientos registrados." << endl;
         return;
     }
 
-    std::cout << "\n=== Movimientos Registrados ===\n";
+    cout << "\n=== Movimientos Registrados ===\n";
     for (const auto& mov : movimientos) {
-        std::cout << "Cédula: " << mov.cedula << "\n";
-        std::cout << "Tipo Movimiento: " << mov.tipoMovimiento << "\n";
-        std::cout << "Monto: $" << mov.monto << "\n";
-        std::cout << "Fecha: " << mov.fecha << "\n";
-        std::cout << "Saldo Final: $" << mov.saldoFinal << "\n";
-        std::cout << "---------------------------\n";
+        cout << "Cédula: " << mov.cedula << "\n";
+        cout << "Tipo Movimiento: " << mov.tipoMovimiento << "\n";
+        cout << "Monto: $" << mov.monto << "\n";
+        cout << "Fecha: " << mov.fecha << "\n";
+        cout << "Saldo Final: $" << mov.saldoFinal << "\n";
+        cout << "---------------------------\n";
     }
 }

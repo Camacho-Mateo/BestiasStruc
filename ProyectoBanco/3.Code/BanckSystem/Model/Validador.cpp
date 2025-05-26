@@ -1,51 +1,50 @@
 #include "Validador.h"
+#include <regex>
+#include <stdexcept>
+using namespace std;
 
-void Validador::validar(const std::string& texto, const std::string& tipo) {
+void Validador::validar(const string& texto, const string& tipo) {
     if (tipo == "nombre" || tipo == "apellido") {
-        std::regex patron("^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$");
-        if (!std::regex_match(texto, patron)) {
-            throw std::invalid_argument("Error: " + tipo + " contiene caracteres inválidos.");
+        regex patron("^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$");
+        if (!regex_match(texto, patron)) {
+            throw invalid_argument("Error: " + tipo + " contiene caracteres inválidos.");
         }
     }
     else if (tipo == "telefono") {
-        std::regex patron("^[0-9]{7,15}$");
-        if (!std::regex_match(texto, patron)) {
-            throw std::invalid_argument("Error: teléfono debe contener solo números (7-15 dígitos).");
+        regex patron("^[0-9]{7,15}$");
+        if (!regex_match(texto, patron)) {
+            throw invalid_argument("Error: teléfono debe contener solo números (7-15 dígitos).");
         }
     }
     else if (tipo == "correo") {
-        std::regex patron(R"(^[\w\.-]+@[\w\.-]+\.\w{2,4}$)");
-        if (!std::regex_match(texto, patron)) {
-            throw std::invalid_argument("Error: formato de correo electrónico inválido.");
+        regex patron(R"(^[\w\.-]+@[\w\.-]+\.\w{2,4}$)");
+        if (!regex_match(texto, patron)) {
+            throw invalid_argument("Error: formato de correo electrónico inválido.");
         }
     }
     else if (tipo == "cedula") {
         if (!validarCedulaEcuatoriana(texto)) {
-            throw std::invalid_argument("Error: cédula ecuatoriana inválida.");
+            throw invalid_argument("Error: cédula ecuatoriana inválida.");
         }
     }
     else {
-        throw std::invalid_argument("Error: tipo de validación desconocido.");
+        throw invalid_argument("Error: tipo de validación desconocido.");
     }
 }
 
-bool Validador::validarCedulaEcuatoriana(const std::string& cedula) {
+bool Validador::validarCedulaEcuatoriana(const string& cedula) {
     if (cedula.length() != 10) return false;
     
-    // Validar que todos sean dígitos
     for (char c : cedula) {
         if (!isdigit(c)) return false;
     }
     
-    // Validar provincia (primeros dos dígitos)
-    int provincia = std::stoi(cedula.substr(0, 2));
+    int provincia = stoi(cedula.substr(0, 2));
     if (provincia < 1 || provincia > 24) return false;
     
-    // Validar tercer dígito
     int tercerDigito = cedula[2] - '0';
     if (tercerDigito > 5) return false;
     
-    // Algoritmo de validación
     int coeficientes[9] = {2,1,2,1,2,1,2,1,2};
     int suma = 0;
     

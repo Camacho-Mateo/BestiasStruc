@@ -5,6 +5,8 @@
 #include "../Model/CuentaAhorro.h"
 #include "../Model/CuentaCorriente.h"
 
+using namespace std;
+
 class Buscador {
 private:
     CuentaAhorro* cuentaAhorro;
@@ -13,9 +15,9 @@ private:
 public:
     Buscador(CuentaAhorro* ca, CuentaCorriente* cc);
 
-    int buscarPorCedula(const std::string& cedula, bool esAhorro);
-    int buscarPorNombre(const std::string& nombre, bool esAhorro);
-    int buscarPorCuenta(const std::string& numeroCuenta, bool esAhorro);
+    int buscarPorCedula(const string& cedula, bool esAhorro);
+    int buscarPorNombre(const string& nombre, bool esAhorro);
+    int buscarPorCuenta(const string& numeroCuenta, bool esAhorro);
 };
 
 #endif
