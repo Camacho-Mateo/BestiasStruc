@@ -9,7 +9,7 @@ AdministradorBanco::AdministradorBanco(Buscador* buscadorAhorro, Buscador* busca
       lectorAhorro(lectorAhorro), lectorCorriente(lectorCorriente) {}
 
 void AdministradorBanco::buscarPorCedula(const string& cedula) {
-    cout << "\n=== Resultados de búsqueda para cédula: " << cedula << " ===\n";
+    cout << "\n=== Resultados de busqueda para cedula: " << cedula << " ===\n";
     
     bool encontrado = false;
 
@@ -24,7 +24,7 @@ void AdministradorBanco::buscarPorCedula(const string& cedula) {
     }
 
     if (!encontrado) {
-        cout << "No se encontraron cuentas asociadas a esta cédula.\n";
+        cout << "No se encontraron cuentas asociadas a esta cedula.\n";
     }
 }
 
@@ -32,10 +32,10 @@ void AdministradorBanco::buscarPorNumeroCuenta() {
     string numeroCuenta;
     int tipoCuenta;
 
-    cout << "\n=== Búsqueda por número de cuenta ===\n";
+    cout << "\n=== Búsqueda por numero de cuenta ===\n";
     cout << "Tipo de cuenta (1: Ahorro, 2: Corriente): ";
     cin >> tipoCuenta;
-    cout << "Número de cuenta: ";
+    cout << "Numero de cuenta: ";
     cin >> numeroCuenta;
 
     if (tipoCuenta == 1) {
@@ -43,6 +43,6 @@ void AdministradorBanco::buscarPorNumeroCuenta() {
     } else if (tipoCuenta == 2) {
         lectorCorriente->mostrarDatosPorCuenta(numeroCuenta, false);
     } else {
-        cout << "Tipo de cuenta inválido.\n";
+        cout << "Tipo de cuenta invalido.\n";
     }
 }

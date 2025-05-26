@@ -17,7 +17,7 @@ void Registrador::registrar() {
 
     while (true) {
         try {
-            cout << "Ingrese la cédula: ";
+            cout << "Ingrese la cedula: ";
             cin >> cedula;
             Validador::validar(cedula, "cedula");
             break;
@@ -63,7 +63,7 @@ void Registrador::registrar() {
 
     while (true) {
         try {
-            cout << "Ingrese el teléfono: ";
+            cout << "Ingrese el telefono: ";
             getline(cin, telefono);
             Validador::validar(telefono, "telefono");
             break;
@@ -106,7 +106,7 @@ void Registrador::registrar() {
         administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
 
     } else {
-        cout << "Tipo de cuenta inválido.\n";
+        cout << "Tipo de cuenta invalido.\n";
     }
 
     cout << "\nPresione Enter para continuar...";

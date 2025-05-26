@@ -58,7 +58,7 @@ void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, cons
     }
 
     archivo.close();
-    cout << "[DEBUG] Archivo cuentas.bin guardado con éxito." << endl;
+    cout << "[DEBUG] Archivo cuentas.bin guardado con exito." << endl;
 }
 
 void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorriente& cuentaCorriente) {
@@ -122,5 +122,5 @@ void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorri
     }
 
     archivo.close();
-    cout << "[DEBUG] Archivo cuentas.bin cargado con éxito." << endl;
+    cout << "[DEBUG] Archivo cuentas.bin cargado con exito." << endl;
 }

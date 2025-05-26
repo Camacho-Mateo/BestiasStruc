@@ -16,8 +16,8 @@ void Lector::mostrarDatosPorCuenta(const string& numeroCuenta, bool esAhorro) {
 
     cout << "\n=== Datos de la Cuenta ===\n";
     cout << "Tipo: " << (esAhorro ? "Ahorro" : "Corriente") << "\n";
-    cout << "Número: " << numeroCuenta << "\n";
-    cout << "Cédula: " << (esAhorro ? cuentaAhorro->getCedula(pos) : cuentaCorriente->getCedula(pos)) << "\n";
+    cout << "Numero: " << numeroCuenta << "\n";
+    cout << "Cedula: " << (esAhorro ? cuentaAhorro->getCedula(pos) : cuentaCorriente->getCedula(pos)) << "\n";
     cout << "Nombre: " << (esAhorro ? cuentaAhorro->getNombre(pos) : cuentaCorriente->getNombre(pos)) << "\n";
     cout << "Saldo: $" << (esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos)) << "\n";
 }
@@ -31,9 +31,9 @@ void Lector::mostrarDatosPorCedula(const string& cedula, bool esAhorro) {
 
     cout << "\n=== Datos del Cliente ===\n";
     cout << "Tipo Cuenta: " << (esAhorro ? "Ahorro" : "Corriente") << "\n";
-    cout << "Cédula: " << cedula << "\n";
+    cout << "Cedula: " << cedula << "\n";
     cout << "Nombre: " << (esAhorro ? cuentaAhorro->getNombre(pos) : cuentaCorriente->getNombre(pos)) << "\n";
-    cout << "Número Cuenta: " << (esAhorro ? cuentaAhorro->getNumeroCuentaStr(pos) : cuentaCorriente->getNumeroCuentaStr(pos)) << "\n";
+    cout << "Numero Cuenta: " << (esAhorro ? cuentaAhorro->getNumeroCuentaStr(pos) : cuentaCorriente->getNumeroCuentaStr(pos)) << "\n";
     cout << "Saldo: $" << (esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos)) << "\n";
 }
 
@@ -85,7 +85,7 @@ void Lector::mostrarMovimientos() {
 
     cout << "\n=== Movimientos Registrados ===\n";
     for (const auto& mov : movimientos) {
-        cout << "Cédula: " << mov.cedula << "\n";
+        cout << "Cedula: " << mov.cedula << "\n";
         cout << "Tipo Movimiento: " << mov.tipoMovimiento << "\n";
         cout << "Monto: $" << mov.monto << "\n";
         cout << "Fecha: " << mov.fecha << "\n";

@@ -6,6 +6,7 @@ using namespace std;
 
 size_t CuentaAhorro::contadorCuentas = 1000;
 
+
 CuentaAhorro::CuentaAhorro() {}
 
 size_t CuentaAhorro::getTotalCuentas() const {

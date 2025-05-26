@@ -56,7 +56,7 @@ bool Cajero::transferir(bool esAhorroOrigen, const string& cuentaOrigen,
         cuentaCorriente->getCedula(posOrigen);
     
     if (cedulaTitular != cedula) {
-        cerr << "Error: La cédula no coincide con el titular" << endl;
+        cerr << "Error: La cedula no coincide con el titular" << endl;
         return false;
     }
 
@@ -84,7 +84,7 @@ double Cajero::consultarSaldo(bool esAhorro, const string& numeroCuenta, const s
         cuentaCorriente->getCedula(pos);
     
     if (cedulaTitular != cedula) {
-        cerr << "Error: La cédula no coincide con el titular" << endl;
+        cerr << "Error: La cedula no coincide con el titular" << endl;
         return -1.0;
     }
 

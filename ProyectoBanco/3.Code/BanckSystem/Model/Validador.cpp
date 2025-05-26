@@ -7,13 +7,13 @@ void Validador::validar(const string& texto, const string& tipo) {
     if (tipo == "nombre" || tipo == "apellido") {
         regex patron("^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$");
         if (!regex_match(texto, patron)) {
-            throw invalid_argument("Error: " + tipo + " contiene caracteres inválidos.");
+            throw invalid_argument("Error: " + tipo + " contiene caracteres invalidos.");
         }
     }
     else if (tipo == "telefono") {
         regex patron("^[0-9]{7,15}$");
         if (!regex_match(texto, patron)) {
-            throw invalid_argument("Error: teléfono debe contener solo números (7-15 dígitos).");
+            throw invalid_argument("Error: telefono debe contener solo numeros (7-15 digitos).");
         }
     }
     else if (tipo == "correo") {
@@ -24,7 +24,7 @@ void Validador::validar(const string& texto, const string& tipo) {
     }
     else if (tipo == "cedula") {
         if (!validarCedulaEcuatoriana(texto)) {
-            throw invalid_argument("Error: cédula ecuatoriana inválida.");
+            throw invalid_argument("Error: cedula ecuatoriana invalida.");
         }
     }
     else {

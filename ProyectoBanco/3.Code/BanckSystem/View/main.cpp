@@ -20,12 +20,12 @@ void mostrarMenuPrincipal() {
     cout << "\n=== SISTEMA BANCARIO ===" << endl;
     cout << "1. Registrar nuevo cliente" << endl;
     cout << "2. Buscar cliente (Administrador)" << endl;
-    cout << "3. Realizar depósito" << endl;
+    cout << "3. Realizar deposito" << endl;
     cout << "4. Realizar retiro" << endl;
     cout << "5. Realizar transferencia" << endl;
     cout << "6. Consultar saldo" << endl;
     cout << "7. Salir" << endl;
-    cout << "Seleccione una opción: ";
+    cout << "Seleccione una opcion: ";
 }
 
 int main() {
@@ -52,7 +52,7 @@ int main() {
         mostrarMenuPrincipal();
 
         if (!(cin >> opcion)) {
-            cout << "Entrada inválida. Intente nuevamente.\n";
+            cout << "Entrada invalida. Intente nuevamente.\n";
             limpiarBuffer();
             continue;
         }
@@ -65,12 +65,12 @@ int main() {
                 break;
             case 2: {
                 int subopcion;
-                cout << "\n=== BÚSQUEDA DE CLIENTE ===\n";
-                cout << "1. Buscar por cédula\n";
-                cout << "2. Buscar por número de cuenta\n";
-                cout << "Seleccione una opción: ";
+                cout << "\n=== BUSQUEDA DE CLIENTE ===\n";
+                cout << "1. Buscar por cedula\n";
+                cout << "2. Buscar por numero de cuenta\n";
+                cout << "Seleccione una opcion: ";
                 if (!(cin >> subopcion)) {
-                    cout << "Entrada inválida.\n";
+                    cout << "Entrada invalida.\n";
                     limpiarBuffer();
                     break;
                 }
@@ -78,13 +78,13 @@ int main() {
 
                 if (subopcion == 1) {
                     string cedula;
-                    cout << "\nIngrese cédula a buscar: ";
+                    cout << "\nIngrese cedula a buscar: ";
                     getline(cin, cedula);
                     adminBanco.buscarPorCedula(cedula);
                 } else if (subopcion == 2) {
                     adminBanco.buscarPorNumeroCuenta();
                 } else {
-                    cout << "Opción inválida.\n";
+                    cout << "Opcion invalida.\n";
                 }
                 break;
             }
@@ -93,29 +93,29 @@ int main() {
                 string numeroCuenta;
                 double monto;
 
-                cout << "\n=== DEPÓSITO ===" << endl;
+                cout << "\n=== DEPOSITO ===" << endl;
                 cout << "Tipo de cuenta (1: Ahorro, 2: Corriente): ";
                 if (!(cin >> tipo)) {
-                    cout << "Entrada inválida.\n";
+                    cout << "Entrada invalida.\n";
                     limpiarBuffer();
                     break;
                 }
                 limpiarBuffer();
 
-                cout << "Número de cuenta: ";
+                cout << "Numero de cuenta: ";
                 getline(cin, numeroCuenta);
                 cout << "Monto a depositar: ";
                 if (!(cin >> monto)) {
-                    cout << "Entrada inválida.\n";
+                    cout << "Entrada invalida.\n";
                     limpiarBuffer();
                     break;
                 }
                 limpiarBuffer();
 
                 if (cajero.depositar(tipo == 1, numeroCuenta, monto)) {
-                    cout << "Depósito realizado con éxito." << endl;
+                    cout << "Deposito realizado con exito." << endl;
                 } else {
-                    cout << "Error al realizar el depósito." << endl;
+                    cout << "Error al realizar el deposito." << endl;
                 }
                 break;
             }
@@ -127,24 +127,24 @@ int main() {
                 cout << "\n=== RETIRO ===" << endl;
                 cout << "Tipo de cuenta (1: Ahorro, 2: Corriente): ";
                 if (!(cin >> tipo)) {
-                    cout << "Entrada inválida.\n";
+                    cout << "Entrada invalida.\n";
                     limpiarBuffer();
                     break;
                 }
                 limpiarBuffer();
 
-                cout << "Número de cuenta: ";
+                cout << "Numero de cuenta: ";
                 getline(cin, numeroCuenta);
                 cout << "Monto a retirar: ";
                 if (!(cin >> monto)) {
-                    cout << "Entrada inválida.\n";
+                    cout << "Entrada invalida.\n";
                     limpiarBuffer();
                     break;
                 }
                 limpiarBuffer();
 
                 if (cajero.retirar(tipo == 1, numeroCuenta, monto)) {
-                    cout << "Retiro realizado con éxito." << endl;
+                    cout << "Retiro realizado con exito." << endl;
                 } else {
                     cout << "Error al realizar el retiro." << endl;
                 }
@@ -159,32 +159,32 @@ int main() {
                 cout << "CUENTA ORIGEN:" << endl;
                 cout << "Tipo (1: Ahorro, 2: Corriente): ";
                 if (!(cin >> tipoOrigen)) {
-                    cout << "Entrada inválida.\n";
+                    cout << "Entrada invalida.\n";
                     limpiarBuffer();
                     break;
                 }
                 limpiarBuffer();
 
-                cout << "Número de cuenta: ";
+                cout << "Numero de cuenta: ";
                 getline(cin, cuentaOrigen);
-                cout << "Cédula del titular: ";
+                cout << "Cedula del titular: ";
                 getline(cin, cedula);
 
                 cout << "\nCUENTA DESTINO:" << endl;
                 cout << "Tipo (1: Ahorro, 2: Corriente): ";
                 if (!(cin >> tipoDestino)) {
-                    cout << "Entrada inválida.\n";
+                    cout << "Entrada invalida.\n";
                     limpiarBuffer();
                     break;
                 }
                 limpiarBuffer();
 
-                cout << "Número de cuenta: ";
+                cout << "Numero de cuenta: ";
                 getline(cin, cuentaDestino);
 
                 cout << "\nMonto a transferir: ";
                 if (!(cin >> monto)) {
-                    cout << "Entrada inválida.\n";
+                    cout << "Entrada invalida.\n";
                     limpiarBuffer();
                     break;
                 }
@@ -192,7 +192,7 @@ int main() {
 
                 if (cajero.transferir(tipoOrigen == 1, cuentaOrigen, cedula, 
                                       tipoDestino == 1, cuentaDestino, monto)) {
-                    cout << "Transferencia realizada con éxito." << endl;
+                    cout << "Transferencia realizada con exito." << endl;
                 } else {
                     cout << "Error al realizar la transferencia." << endl;
                 }
@@ -205,15 +205,15 @@ int main() {
                 cout << "\n=== CONSULTA DE SALDO ===" << endl;
                 cout << "Tipo de cuenta (1: Ahorro, 2: Corriente): ";
                 if (!(cin >> tipo)) {
-                    cout << "Entrada inválida.\n";
+                    cout << "Entrada invalida.\n";
                     limpiarBuffer();
                     break;
                 }
                 limpiarBuffer();
 
-                cout << "Número de cuenta: ";
+                cout << "Numero de cuenta: ";
                 getline(cin, numeroCuenta);
-                cout << "Cédula del titular: ";
+                cout << "Cedula del titular: ";
                 getline(cin, cedula);
 
                 double saldo = cajero.consultarSaldo(tipo == 1, numeroCuenta, cedula);
@@ -228,7 +228,7 @@ int main() {
                 cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 break;
             default:
-                cout << "\nOpción inválida. Intente nuevamente." << endl;
+                cout << "\nOpcion invalida. Intente nuevamente." << endl;
                 break;
         }
 
