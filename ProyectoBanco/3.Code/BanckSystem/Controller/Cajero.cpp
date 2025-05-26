@@ -1,4 +1,5 @@
 #include "Cajero.h"
+#include "AdministradorBinario.h"
 #include <iostream>
 
 using namespace std;
@@ -18,6 +19,10 @@ bool Cajero::depositar(bool esAhorro, const string& numeroCuenta, double monto) 
     } else {
         cuentaCorriente->setSaldo(pos, cuentaCorriente->getSaldo(pos) + monto);
     }
+
+    AdministradorBinario admin;
+    admin.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
+
     return true;
 }
 
@@ -39,6 +44,10 @@ bool Cajero::retirar(bool esAhorro, const string& numeroCuenta, double monto) {
     } else {
         cuentaCorriente->setSaldo(pos, saldoActual - monto);
     }
+
+    AdministradorBinario admin;
+    admin.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
+
     return true;
 }
 
@@ -68,6 +77,7 @@ bool Cajero::transferir(bool esAhorroOrigen, const string& cuentaOrigen,
         depositar(esAhorroOrigen, cuentaOrigen, monto);
         return false;
     }
+
 
     return true;
 }

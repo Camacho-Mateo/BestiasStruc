@@ -4,6 +4,7 @@
 #include "../Model/CuentaAhorro.h"
 #include "../Model/CuentaCorriente.h"
 #include "Buscador.h"
+#include "AdministradorBinario.h"
 #include <string>
 
 using namespace std;
@@ -16,7 +17,7 @@ private:
 
 public:
     Cajero(CuentaAhorro* ca, CuentaCorriente* cc, Buscador* b);
-    
+
     bool depositar(bool esAhorro, const string& numeroCuenta, double monto);
     bool retirar(bool esAhorro, const string& numeroCuenta, double monto);
     bool transferir(bool esAhorroOrigen, const string& cuentaOrigen, 
