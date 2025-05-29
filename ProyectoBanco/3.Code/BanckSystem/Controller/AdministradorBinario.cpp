@@ -124,3 +124,20 @@ void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorri
     archivo.close();
     cout << "[DEBUG] Archivo cuentas.bin cargado con exito." << endl;
 }
+
+void AdministradorBinario::crearBackup() {
+    ifstream origen("./cuentas.bin", ios::binary);
+    ofstream destino("./backup.bin", ios::binary);
+
+    if (!origen || !destino) {
+        cerr << "Error al crear copia de seguridad (backup)." << endl;
+        return;
+    }
+
+    destino << origen.rdbuf();
+
+    origen.close();
+    destino.close();
+
+    cout << "[DEBUG] Copia de seguridad creada exitosamente como backup.bin." << endl;
+}
