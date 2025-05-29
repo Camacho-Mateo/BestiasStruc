@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <conio.h>
 
 using namespace std;
 
@@ -15,10 +16,25 @@ void Registrador::registrar() {
     string cedula, nombre, apellido, correo, telefono;
     Fecha fechaNacimiento;
 
+
     while (true) {
         try {
+            char c;
+            cedula.clear();
             cout << "Ingrese la cedula: ";
-            cin >> cedula;
+            while (true) {
+                c = getch();
+                if (c >= '0' && c <= '9' && cedula.length() < 10) {
+                    cout << c;
+                    cedula += c;
+                } else if (c == 8 && !cedula.empty()) {
+                    cout << "\b \b";
+                    cedula.pop_back();
+                } else if (c == 13 && !cedula.empty()) {
+                    break;
+                }
+            }
+            cout << endl;
             Validador::validar(cedula, "cedula");
             break;
         } catch (const invalid_argument& e) {
@@ -26,12 +42,24 @@ void Registrador::registrar() {
         }
     }
 
-    cin.ignore();
-
     while (true) {
         try {
+            char c;
+            nombre.clear();
             cout << "Ingrese el nombre: ";
-            getline(cin, nombre);
+            while (true) {
+                c = getch();
+                if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+                    cout << c;
+                    nombre += c;
+                } else if (c == 8 && !nombre.empty()) {
+                    cout << "\b \b";
+                    nombre.pop_back();
+                } else if (c == 13 && !nombre.empty()) {
+                    break;
+                }
+            }
+            cout << endl;
             Validador::validar(nombre, "nombre");
             break;
         } catch (const invalid_argument& e) {
@@ -41,8 +69,22 @@ void Registrador::registrar() {
 
     while (true) {
         try {
+            char c;
+            apellido.clear();
             cout << "Ingrese el apellido: ";
-            getline(cin, apellido);
+            while (true) {
+                c = getch();
+                if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+                    cout << c;
+                    apellido += c;
+                } else if (c == 8 && !apellido.empty()) {
+                    cout << "\b \b";
+                    apellido.pop_back();
+                } else if (c == 13 && !apellido.empty()) {
+                    break;
+                }
+            }
+            cout << endl;
             Validador::validar(apellido, "apellido");
             break;
         } catch (const invalid_argument& e) {
@@ -63,8 +105,22 @@ void Registrador::registrar() {
 
     while (true) {
         try {
+            char c;
+            telefono.clear();
             cout << "Ingrese el telefono: ";
-            getline(cin, telefono);
+            while (true) {
+                c = getch();
+                if (c >= '0' && c <= '9' && telefono.length() < 15) {
+                    cout << c;
+                    telefono += c;
+                } else if (c == 8 && !telefono.empty()) {
+                    cout << "\b \b";
+                    telefono.pop_back();
+                } else if (c == 13 && !telefono.empty()) {
+                    break;
+                }
+            }
+            cout << endl;
             Validador::validar(telefono, "telefono");
             break;
         } catch (const invalid_argument& e) {
@@ -93,7 +149,6 @@ void Registrador::registrar() {
         cout << "Cuenta de ahorro registrada exitosamente.\n";
 
         administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
-
     } else if (tipoCuenta == 2) {
         cuentaCorriente->agregarCuenta(
             persona.getCedula(),
@@ -104,7 +159,6 @@ void Registrador::registrar() {
         cout << "Cuenta corriente registrada exitosamente.\n";
 
         administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
-
     } else {
         cout << "Tipo de cuenta invalido.\n";
     }

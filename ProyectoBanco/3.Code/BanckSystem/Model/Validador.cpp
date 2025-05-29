@@ -32,14 +32,13 @@ void Validador::validar(const string& texto, const string& tipo) {
     }
 }
 
-bool Validador::validarCedulaEcuatoriana(const string& cedula) {
-    if (cedula.length() != 10) return false;
-    
-    for (char c : cedula) {
-        if (!isdigit(c)) return false;
+bool Validador::validarCedulaEcuatoriana(const std::string& cedula) {
+    static const std::regex regexNumeros("^[0-9]{10}$");
+    if (!std::regex_match(cedula, regexNumeros)) {
+        return false;
     }
     
-    int provincia = stoi(cedula.substr(0, 2));
+    int provincia = std::stoi(cedula.substr(0, 2));
     if (provincia < 1 || provincia > 24) return false;
     
     int tercerDigito = cedula[2] - '0';
