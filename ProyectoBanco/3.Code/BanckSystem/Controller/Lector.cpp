@@ -23,18 +23,35 @@ void Lector::mostrarDatosPorCuenta(const string& numeroCuenta, bool esAhorro) {
 }
 
 void Lector::mostrarDatosPorCedula(const string& cedula, bool esAhorro) {
-    int pos = buscador->buscarPorCedula(cedula, esAhorro);
-    if (pos == -1) {
-        cout << "Cliente no encontrado." << endl;
-        return;
+    bool encontrado = false;
+
+    if (esAhorro) {
+        for (size_t i = 0; i < cuentaAhorro->getTotalCuentas(); ++i) {
+            if (cuentaAhorro->getCedula(i) == cedula) {
+                cout << "\n=== Cuenta de Ahorro ===\n";
+                cout << "Cedula: " << cedula << "\n";
+                cout << "Nombre: " << cuentaAhorro->getNombre(i) << "\n";
+                cout << "Numero Cuenta: " << cuentaAhorro->getNumeroCuentaStr(i) << "\n";
+                cout << "Saldo: $" << cuentaAhorro->getSaldo(i) << "\n";
+                encontrado = true;
+            }
+        }
+    } else {
+        for (size_t i = 0; i < cuentaCorriente->getTotalCuentas(); ++i) {
+            if (cuentaCorriente->getCedula(i) == cedula) {
+                cout << "\n=== Cuenta Corriente ===\n";
+                cout << "Cedula: " << cedula << "\n";
+                cout << "Nombre: " << cuentaCorriente->getNombre(i) << "\n";
+                cout << "Numero Cuenta: " << cuentaCorriente->getNumeroCuentaStr(i) << "\n";
+                cout << "Saldo: $" << cuentaCorriente->getSaldo(i) << "\n";
+                encontrado = true;
+            }
+        }
     }
 
-    cout << "\n=== Datos del Cliente ===\n";
-    cout << "Tipo Cuenta: " << (esAhorro ? "Ahorro" : "Corriente") << "\n";
-    cout << "Cedula: " << cedula << "\n";
-    cout << "Nombre: " << (esAhorro ? cuentaAhorro->getNombre(pos) : cuentaCorriente->getNombre(pos)) << "\n";
-    cout << "Numero Cuenta: " << (esAhorro ? cuentaAhorro->getNumeroCuentaStr(pos) : cuentaCorriente->getNumeroCuentaStr(pos)) << "\n";
-    cout << "Saldo: $" << (esAhorro ? cuentaAhorro->getSaldo(pos) : cuentaCorriente->getSaldo(pos)) << "\n";
+    if (!encontrado) {
+        cout << "No se encontraron cuentas " << (esAhorro ? "de ahorro" : "corrientes") << " asociadas a esta cedula.\n";
+    }
 }
 
 vector<Movimiento> Lector::leerMovimientos() {
