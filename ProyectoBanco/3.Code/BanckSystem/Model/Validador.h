@@ -2,16 +2,13 @@
 #define VALIDADOR_H
 
 #include <string>
-#include <regex>
-#include <stdexcept>
-using namespace std;
 
 class Validador {
 public:
-    static void validar(const string& texto, const string& tipo);
-    
-private:
-    static bool validarCedulaEcuatoriana(const string& cedula);
+    static void validar(const std::string& texto, const std::string& tipo);
+    static bool validarCedulaEcuatoriana(const std::string& cedula);
+    static std::string validarCantidad();
 };
 
 #endif
+
