@@ -5,6 +5,8 @@
 #include "../Controller/Buscador.h"
 #include "../Controller/Lector.h"
 
+using namespace std;
+
 class AdministradorBanco {
 private:
     Buscador* buscadorAhorro;
@@ -14,10 +16,12 @@ private:
 
 public:
     AdministradorBanco(Buscador* buscadorAhorro, Buscador* buscadorCorriente,
-                       Lector* lectorAhorro, Lector* lectorCorriente);
-    
-    void buscarPorCedula(const std::string& cedula);
+                      Lector* lectorAhorro, Lector* lectorCorriente);
+
+    void buscarPorCedula(const string& cedula);
     void buscarPorNumeroCuenta();
+
+    bool estaRegistrada(const string& cedula);
 };
 
 #endif

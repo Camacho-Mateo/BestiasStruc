@@ -46,3 +46,8 @@ void AdministradorBanco::buscarPorNumeroCuenta() {
         cout << "Tipo de cuenta invalido.\n";
     }
 }
+
+bool AdministradorBanco::estaRegistrada(const string& cedula) {
+    return (buscadorAhorro->buscarPorCedula(cedula, true) != -1 ||
+            buscadorCorriente->buscarPorCedula(cedula, false) != -1);
+}

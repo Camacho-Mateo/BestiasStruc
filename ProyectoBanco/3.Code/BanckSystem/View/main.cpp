@@ -41,9 +41,8 @@ int main() {
     Lector lectorCorriente(nullptr, &cuentaCorriente, &buscadorCorriente);
 
     Cajero cajero(&cuentaAhorro, &cuentaCorriente, &buscadorAhorro);
-    AdministradorBanco adminBanco(&buscadorAhorro, &buscadorCorriente, 
-                                   &lectorAhorro, &lectorCorriente);
-    Registrador registrador(&cuentaAhorro, &cuentaCorriente);
+    AdministradorBanco adminBanco(&buscadorAhorro, &buscadorCorriente, &lectorAhorro, &lectorCorriente);
+    Registrador registrador(&cuentaAhorro, &cuentaCorriente, &adminBanco); // ✅ Corrección aplicada
 
     AdministradorBinario binario;
     binario.cargarCuentas(cuentaAhorro, cuentaCorriente);
@@ -192,7 +191,7 @@ int main() {
                 }
                 limpiarBuffer();
 
-                if (cajero.transferir(tipoOrigen == 1, cuentaOrigen, cedula, 
+                if (cajero.transferir(tipoOrigen == 1, cuentaOrigen, cedula,
                                       tipoDestino == 1, cuentaDestino, monto)) {
                     cout << "Transferencia realizada con exito." << endl;
                 } else {
