@@ -25,6 +25,8 @@ void mostrarMenuPrincipal() {
     cout << "5. Realizar transferencia" << endl;
     cout << "6. Consultar saldo" << endl;
     cout << "7. Salir" << endl;
+    cout << "8. Crear backup de cuentas" << endl;
+    cout << "9. Restaurar backup de cuentas" << endl;
     cout << "Seleccione una opcion: ";
 }
 
@@ -224,6 +226,17 @@ int main() {
                 }
                 break;
             }
+            case 8:
+                cout << "\nCreando backup de las cuentas..." << endl;
+                binario.crearBackup();
+                cout << "Backup creado exitosamente." << endl;
+                break;
+            case 9:
+                cout << "\nRestaurando backup de las cuentas..." << endl;
+                binario.restaurarBackup();
+                binario.cargarCuentas(cuentaAhorro, cuentaCorriente);
+                cout << "Backup restaurado correctamente." << endl;
+                break;
             case 7:
                 cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 break;

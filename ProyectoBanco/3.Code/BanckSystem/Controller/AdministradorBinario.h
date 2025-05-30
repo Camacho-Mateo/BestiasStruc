@@ -9,6 +9,8 @@ public:
     void guardarCuentas(const CuentaAhorro& cuentaAhorro, const CuentaCorriente& cuentaCorriente);
     void cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorriente& cuentaCorriente);
     void crearBackup();
+    void restaurarBackup();
 };
 
 #endif
+

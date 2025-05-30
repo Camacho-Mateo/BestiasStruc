@@ -58,7 +58,7 @@ void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, cons
     }
 
     archivo.close();
-    cout << "[DEBUG] Archivo cuentas.bin guardado con exito." << endl;
+    cout << "[DEBUG] Archivo cuentas.bin guardado con éxito." << endl;
 }
 
 void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorriente& cuentaCorriente) {
@@ -122,7 +122,7 @@ void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorri
     }
 
     archivo.close();
-    cout << "[DEBUG] Archivo cuentas.bin cargado con exito." << endl;
+    cout << "[DEBUG] Archivo cuentas.bin cargado con éxito." << endl;
 }
 
 void AdministradorBinario::crearBackup() {
@@ -140,4 +140,26 @@ void AdministradorBinario::crearBackup() {
     destino.close();
 
     cout << "[DEBUG] Copia de seguridad creada exitosamente como backup.bin." << endl;
+}
+
+void AdministradorBinario::restaurarBackup() {
+    ifstream backup("./backup.bin", ios::binary);
+    ofstream cuentas("./cuentas.bin", ios::binary | ios::trunc);
+
+    if (!backup) {
+        cerr << "Error: No se pudo abrir el archivo de respaldo (backup.bin)." << endl;
+        return;
+    }
+
+    if (!cuentas) {
+        cerr << "Error: No se pudo abrir el archivo cuentas.bin para restaurar." << endl;
+        return;
+    }
+
+    cuentas << backup.rdbuf();
+
+    backup.close();
+    cuentas.close();
+
+    cout << "[DEBUG] Backup restaurado exitosamente desde backup.bin a cuentas.bin." << endl;
 }
