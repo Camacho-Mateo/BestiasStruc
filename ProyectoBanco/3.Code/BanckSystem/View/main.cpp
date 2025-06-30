@@ -1,6 +1,8 @@
 #include <iostream>
 #include <limits>
 #include <string>
+#include <conio.h>
+
 #include "../Controller/Registrador.h"
 #include "../Controller/Cajero.h"
 #include "../Model/CuentaAhorro.h"
@@ -10,6 +12,7 @@
 #include "../Model/AdministradorBanco.h"
 #include "../Controller/AdministradorBinario.h"
 #include "../Model/Validador.h"
+#include "../Controller/Ordenador.h"
 
 using namespace std;
 
@@ -26,10 +29,30 @@ void mostrarMenuPrincipal() {
     cout << "4. Realizar retiro" << endl;
     cout << "5. Realizar transferencia" << endl;
     cout << "6. Consultar saldo" << endl;
-    cout << "7. Salir" << endl;
-    cout << "8. Crear backup de cuentas" << endl;
-    cout << "9. Restaurar backup de cuentas" << endl;
+    cout << "7. Crear backup de cuentas" << endl;
+    cout << "8. Restaurar backup de cuentas" << endl;
+    cout << "9. Ordenar y mostrar cuentas" << endl;
+    cout << "10. Salir" << endl;
     cout << "Seleccione una opcion: ";
+}
+
+int leerOpcionMenu() {
+    string entrada;
+    cout << "> ";
+    getline(cin, entrada);
+
+    try {
+        int opcion = stoi(entrada);
+        if (opcion >= 1 && opcion <= 10) {
+            return opcion;
+        } else {
+            cout << "Opcion invalida. Intente nuevamente.\n";
+            return -1;
+        }
+    } catch (...) {
+        cout << "Entrada no valida. Intente nuevamente.\n";
+        return -1;
+    }
 }
 
 int main() {
@@ -42,25 +65,19 @@ int main() {
     Lector lectorAhorro(&cuentaAhorro, nullptr, &buscadorAhorro);
     Lector lectorCorriente(nullptr, &cuentaCorriente, &buscadorCorriente);
 
-    Cajero cajero(&cuentaAhorro, &cuentaCorriente, &buscadorAhorro);
-    AdministradorBanco adminBanco(&buscadorAhorro, &buscadorCorriente, &lectorAhorro, &lectorCorriente);
-    Registrador registrador(&cuentaAhorro, &cuentaCorriente, &adminBanco);
-
     AdministradorBinario binario;
     binario.cargarCuentas(cuentaAhorro, cuentaCorriente);
 
+    Cajero cajero(&cuentaAhorro, &cuentaCorriente, &buscadorAhorro, &binario);
+    AdministradorBanco adminBanco(&buscadorAhorro, &buscadorCorriente, &lectorAhorro, &lectorCorriente);
+    Registrador registrador(&cuentaAhorro, &cuentaCorriente, &adminBanco);
+
     int opcion = 0;
 
-    while (opcion != 7) {
+    while (opcion != 10) {
         mostrarMenuPrincipal();
-
-        if (!(cin >> opcion)) {
-            cout << "Entrada invalida. Intente nuevamente.\n";
-            limpiarBuffer();
-            continue;
-        }
-
-        limpiarBuffer();
+        opcion = leerOpcionMenu();
+        if (opcion == -1) continue;
 
         switch (opcion) {
             case 1:
@@ -222,20 +239,45 @@ int main() {
                 break;
             }
 
-            case 8:
+            case 7:
                 cout << "\nCreando backup de las cuentas..." << endl;
                 binario.crearBackup();
                 cout << "Backup creado exitosamente." << endl;
                 break;
 
-            case 9:
+            case 8:
                 cout << "\nRestaurando backup de las cuentas..." << endl;
                 binario.restaurarBackup();
                 binario.cargarCuentas(cuentaAhorro, cuentaCorriente);
                 cout << "Backup restaurado correctamente." << endl;
                 break;
 
-            case 7:
+            case 9: {
+                cout << "\n=== ORDENAR CUENTAS ===\n";
+                cout << "1. Ordenar por nombre\n";
+                cout << "2. Ordenar por numero de cuenta\n";
+                cout << "Seleccione una opcion: ";
+                int criterio;
+                if (!(cin >> criterio) || (criterio != 1 && criterio != 2)) {
+                    cout << "Opcion invalida.\n";
+                    limpiarBuffer();
+                    break;
+                }
+                limpiarBuffer();
+
+                Ordenador ordenador(&cuentaAhorro, &cuentaCorriente);
+
+                if (criterio == 1) {
+                    ordenador.ordenarPorNombre(true);
+                    ordenador.ordenarPorNombre(false);
+                } else {
+                    ordenador.ordenarPorNumeroCuenta(true);
+                    ordenador.ordenarPorNumeroCuenta(false);
+                }
+                break;
+            }
+
+            case 10:
                 cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 break;
 
@@ -244,7 +286,7 @@ int main() {
                 break;
         }
 
-        if (opcion != 7) {
+        if (opcion != 10) {
             cout << "\nPresione Enter para continuar...";
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cin.get();
@@ -252,6 +294,5 @@ int main() {
     }
 
     binario.guardarCuentas(cuentaAhorro, cuentaCorriente);
-
     return 0;
 }

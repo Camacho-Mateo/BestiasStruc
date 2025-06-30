@@ -13,31 +13,19 @@ size_t CuentaCorriente::getTotalCuentas() const {
 }
 
 string CuentaCorriente::getCedula(size_t index) const {
-    if (index < cuentas.size()) {
-        return cuentas[index].cedula;
-    }
-    return "";
+    return (index < cuentas.size()) ? cuentas[index].cedula : "";
 }
 
 string CuentaCorriente::getNombre(size_t index) const {
-    if (index < cuentas.size()) {
-        return cuentas[index].nombre;
-    }
-    return "";
+    return (index < cuentas.size()) ? cuentas[index].nombre : "";
 }
 
 string CuentaCorriente::getNumeroCuentaStr(size_t index) const {
-    if (index < cuentas.size()) {
-        return cuentas[index].numeroCuenta;
-    }
-    return "";
+    return (index < cuentas.size()) ? cuentas[index].numeroCuenta : "";
 }
 
 double CuentaCorriente::getSaldo(size_t index) const {
-    if (index < cuentas.size()) {
-        return cuentas[index].saldo;
-    }
-    return -1;
+    return (index < cuentas.size()) ? cuentas[index].saldo : -1.0;
 }
 
 void CuentaCorriente::setSaldo(size_t index, double nuevoSaldo) {
@@ -46,18 +34,29 @@ void CuentaCorriente::setSaldo(size_t index, double nuevoSaldo) {
     }
 }
 
-void CuentaCorriente::agregarCuenta(const string& cedula, const string& nombre, 
-                                  const string& numeroCuenta, double saldoInicial) {
-    Cuenta nueva;
-    nueva.cedula = cedula;
-    nueva.nombre = nombre;
-    nueva.numeroCuenta = numeroCuenta;
-    nueva.saldo = saldoInicial;
-    cuentas.push_back(nueva);
+void CuentaCorriente::agregarCuenta(const string& cedula, const string& nombre,
+                                     const string& numeroCuenta, double saldoInicial) {
+    cuentas.push_back({cedula, nombre, numeroCuenta, saldoInicial});
+
+    // Ajustar contador si el número de cuenta es mayor
+    if (numeroCuenta.rfind("CC", 0) == 0 && numeroCuenta.length() > 2) {
+        size_t num = stoi(numeroCuenta.substr(2));
+        if (num > contadorCuentas) {
+            contadorCuentas = num;
+        }
+    }
 }
 
 string CuentaCorriente::generarNumeroCuenta() {
     ostringstream oss;
     oss << "CC" << setw(8) << setfill('0') << ++contadorCuentas;
     return oss.str();
+}
+
+void CuentaCorriente::setContador(size_t nuevoValor) {
+    contadorCuentas = nuevoValor;
+}
+
+size_t CuentaCorriente::getContador() {
+    return contadorCuentas;
 }

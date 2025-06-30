@@ -1,8 +1,14 @@
 #include "AdministradorBinario.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <filesystem>
+#include <chrono>
+#include <ctime>
 
 using namespace std;
+namespace fs = std::filesystem;
 
 void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, const CuentaCorriente& cuentaCorriente) {
     ofstream archivo("./cuentas.bin", ios::binary);
@@ -126,8 +132,22 @@ void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorri
 }
 
 void AdministradorBinario::crearBackup() {
+    fs::path carpetaBackup = "./backups";
+    if (!fs::exists(carpetaBackup)) {
+        fs::create_directory(carpetaBackup);
+    }
+
+    auto ahora = chrono::system_clock::now();
+    time_t tiempoActual = chrono::system_clock::to_time_t(ahora);
+    tm tiempoLocal;
+    localtime_s(&tiempoLocal, &tiempoActual);  // ✅ Compatible con Windows
+
+    stringstream nombreArchivo;
+    nombreArchivo << carpetaBackup.string() << "/backup_"
+                  << put_time(&tiempoLocal, "%Y%m%d_%H%M%S") << ".bin";
+
     ifstream origen("./cuentas.bin", ios::binary);
-    ofstream destino("./backup.bin", ios::binary);
+    ofstream destino(nombreArchivo.str(), ios::binary);
 
     if (!origen || !destino) {
         cerr << "Error al crear copia de seguridad (backup)." << endl;
@@ -135,31 +155,54 @@ void AdministradorBinario::crearBackup() {
     }
 
     destino << origen.rdbuf();
-
     origen.close();
     destino.close();
 
-    cout << "[DEBUG] Copia de seguridad creada exitosamente como backup.bin." << endl;
+    cout << "[DEBUG] Copia de seguridad creada exitosamente como " << nombreArchivo.str() << endl;
 }
 
 void AdministradorBinario::restaurarBackup() {
-    ifstream backup("./backup.bin", ios::binary);
+    string nombreBackup;
+    cout << "Ingrese el nombre del backup a restaurar (ej. backup_20250530_123405): ";
+    cin >> nombreBackup;
+
+    fs::path rutaBackup = "./backups/" + nombreBackup + ".bin";
+
+    if (!fs::exists(rutaBackup)) {
+        cerr << "Error: El archivo de respaldo especificado no existe: " << rutaBackup << endl;
+        return;
+    }
+
+    if (fs::exists("./cuentas.bin")) {
+        ifstream archivoActual("./cuentas.bin", ios::binary);
+        ofstream copiaSeguridad("./backup.bin", ios::binary);
+        if (archivoActual && copiaSeguridad) {
+            copiaSeguridad << archivoActual.rdbuf();
+            cout << "[DEBUG] Copia de seguridad temporal creada como backup.bin antes de restaurar." << endl;
+        } else {
+            cerr << "Advertencia: No se pudo crear copia de seguridad temporal." << endl;
+        }
+        archivoActual.close();
+        copiaSeguridad.close();
+    }
+
+    ifstream backup(rutaBackup, ios::binary);
     ofstream cuentas("./cuentas.bin", ios::binary | ios::trunc);
 
     if (!backup) {
-        cerr << "Error: No se pudo abrir el archivo de respaldo (backup.bin)." << endl;
+        cerr << "Error: No se pudo abrir el archivo de respaldo: " << rutaBackup << endl;
         return;
     }
 
     if (!cuentas) {
-        cerr << "Error: No se pudo abrir el archivo cuentas.bin para restaurar." << endl;
+        cerr << "Error: No se pudo abrir cuentas.bin para restaurar." << endl;
         return;
     }
 
     cuentas << backup.rdbuf();
-
     backup.close();
     cuentas.close();
 
-    cout << "[DEBUG] Backup restaurado exitosamente desde backup.bin a cuentas.bin." << endl;
+    cout << "[DEBUG] Restauración completada desde " << rutaBackup << " a cuentas.bin" << endl;
 }
+
