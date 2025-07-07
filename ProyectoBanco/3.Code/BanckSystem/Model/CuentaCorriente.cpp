@@ -1,6 +1,7 @@
 #include "CuentaCorriente.h"
 #include <sstream>
 #include <iomanip>
+#include <cctype>
 
 using namespace std;
 
@@ -38,9 +39,8 @@ void CuentaCorriente::agregarCuenta(const string& cedula, const string& nombre,
                                      const string& numeroCuenta, double saldoInicial) {
     cuentas.push_back({cedula, nombre, numeroCuenta, saldoInicial});
 
-    // Ajustar contador si el número de cuenta es mayor
-    if (numeroCuenta.rfind("CC", 0) == 0 && numeroCuenta.length() > 2) {
-        size_t num = stoi(numeroCuenta.substr(2));
+    if (numeroCuenta.rfind("CC", 0) == 0 && numeroCuenta.length() > 5) {
+        size_t num = stoi(numeroCuenta.substr(5));
         if (num > contadorCuentas) {
             contadorCuentas = num;
         }
@@ -49,7 +49,7 @@ void CuentaCorriente::agregarCuenta(const string& cedula, const string& nombre,
 
 string CuentaCorriente::generarNumeroCuenta() {
     ostringstream oss;
-    oss << "CC" << setw(8) << setfill('0') << ++contadorCuentas;
+    oss << "CC" << codigoSucursal << "-" << setw(6) << setfill('0') << ++contadorCuentas;
     return oss.str();
 }
 
@@ -59,4 +59,10 @@ void CuentaCorriente::setContador(size_t nuevoValor) {
 
 size_t CuentaCorriente::getContador() {
     return contadorCuentas;
+}
+
+void CuentaCorriente::setCodigoSucursal(const string& codigo) {
+    if (codigo.size() == 2 && isdigit(codigo[0]) && isdigit(codigo[1])) {
+        codigoSucursal = codigo;
+    }
 }

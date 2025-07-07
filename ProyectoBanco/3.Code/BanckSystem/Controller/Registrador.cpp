@@ -6,6 +6,8 @@
 #include <string>
 #include <limits>
 #include <conio.h>
+#include <map>
+#include <cctype>
 
 using namespace std;
 
@@ -144,6 +146,34 @@ void Registrador::registrar() {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     if (tipoCuenta == 1) {
+        map<int, pair<string, string>> sucursalesPichincha = {
+            {1, {"Quito", "01"}},
+            {2, {"Rumiñahui", "02"}},
+            {3, {"Cayambe", "03"}},
+            {4, {"Mejía", "04"}},
+            {5, {"Pedro Moncayo", "05"}},
+            {6, {"Pedro Vicente Maldonado", "06"}},
+            {7, {"Puerto Quito", "07"}},
+            {8, {"San Miguel de los Bancos", "08"}}
+};
+
+        int opcionSucursal = 0;
+        cout << "\nSeleccione la ciudad donde se genera la cuenta:\n";
+        for (const auto& s : sucursalesPichincha) {
+            cout << s.first << ". " << s.second.first << "\n";
+        }
+        cout << "Opcion: ";
+        cin >> opcionSucursal;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        if (sucursalesPichincha.count(opcionSucursal) == 0) {
+            cout << "Opción de ciudad inválida. Cancelando registro.\n";
+            return;
+        }
+
+        string codigoSucursal = sucursalesPichincha[opcionSucursal].second;
+        cuentaAhorro->setCodigoSucursal(codigoSucursal);
+
         cuentaAhorro->agregarCuenta(
             persona.getCedula(),
             persona.getNombre(),
@@ -152,6 +182,7 @@ void Registrador::registrar() {
         );
         cout << "Cuenta de ahorro registrada exitosamente.\n";
         administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
+
     } else if (tipoCuenta == 2) {
         cuentaCorriente->agregarCuenta(
             persona.getCedula(),

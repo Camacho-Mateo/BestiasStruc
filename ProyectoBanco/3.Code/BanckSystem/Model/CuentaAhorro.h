@@ -4,35 +4,35 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 class CuentaAhorro {
 private:
     struct Cuenta {
-        string cedula;
-        string nombre;
-        string numeroCuenta;
+        std::string cedula;
+        std::string nombre;
+        std::string numeroCuenta;
         double saldo;
     };
 
-    vector<Cuenta> cuentas;
+    std::vector<Cuenta> cuentas;
     static size_t contadorCuentas;
+    std::string codigoSucursal = "00";
 
 public:
     CuentaAhorro();
 
     size_t getTotalCuentas() const;
-    string getCedula(size_t index) const;
-    string getNombre(size_t index) const;
-    string getNumeroCuentaStr(size_t index) const;
+    std::string getCedula(size_t index) const;
+    std::string getNombre(size_t index) const;
+    std::string getNumeroCuentaStr(size_t index) const;
     double getSaldo(size_t index) const;
     void setSaldo(size_t index, double nuevoSaldo);
 
-    void agregarCuenta(const string& cedula, const string& nombre,
-                       const string& numeroCuenta, double saldoInicial);
-
-    string generarNumeroCuenta();
-
+    void agregarCuenta(const std::string& cedula, const std::string& nombre,
+                       const std::string& numeroCuenta, double saldoInicial);
+    
+    std::string generarNumeroCuenta();
+    void setCodigoSucursal(const std::string& codigo);
+    
     static void setContador(size_t nuevoValor);
     static size_t getContador();
 };

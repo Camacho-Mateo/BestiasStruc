@@ -1,6 +1,7 @@
 #include "CuentaAhorro.h"
 #include <sstream>
 #include <iomanip>
+#include <cctype>
 
 using namespace std;
 
@@ -38,9 +39,8 @@ void CuentaAhorro::agregarCuenta(const string& cedula, const string& nombre,
                                   const string& numeroCuenta, double saldoInicial) {
     cuentas.push_back({cedula, nombre, numeroCuenta, saldoInicial});
 
-    // Ajustar contador si es necesario
-    if (numeroCuenta.rfind("AH", 0) == 0 && numeroCuenta.length() > 2) {
-        size_t num = stoi(numeroCuenta.substr(2));
+    if (numeroCuenta.rfind("AH", 0) == 0 && numeroCuenta.length() > 4) {
+        size_t num = stoi(numeroCuenta.substr(5)); // salta "AH" + 2 dígitos código + "-" = 5
         if (num > contadorCuentas) {
             contadorCuentas = num;
         }
@@ -49,8 +49,14 @@ void CuentaAhorro::agregarCuenta(const string& cedula, const string& nombre,
 
 string CuentaAhorro::generarNumeroCuenta() {
     ostringstream oss;
-    oss << "AH" << setw(8) << setfill('0') << ++contadorCuentas;
+    oss << "AH" << codigoSucursal << "-" << setw(6) << setfill('0') << ++contadorCuentas;
     return oss.str();
+}
+
+void CuentaAhorro::setCodigoSucursal(const string& codigo) {
+    if (codigo.size() == 2 && isdigit(codigo[0]) && isdigit(codigo[1])) {
+        codigoSucursal = codigo;
+    }
 }
 
 void CuentaAhorro::setContador(size_t nuevoValor) {
