@@ -20,6 +20,7 @@ private:
 
     void quickSort(std::vector<Registro>& vec, int low, int high, bool ordenarPorNombre);
     int partition(std::vector<Registro>& vec, int low, int high, bool ordenarPorNombre);
+    void bucketSort(std::vector<Registro>& vec);
     void imprimir(const std::vector<Registro>& vec, bool esAhorro);
 
 public:

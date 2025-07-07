@@ -15,6 +15,7 @@
 #include "../Model/Validador.h"
 #include "../Controller/Ordenador.h"
 #include "../View/MenuInteractivo.h"
+#include "../Controller/CalculadoraHash.h"  // <-- Incluido para Hash
 
 using namespace std;
 
@@ -39,6 +40,8 @@ int main() {
     Cajero cajero(&cuentaAhorro, &cuentaCorriente, &buscadorAhorro, &binario);
     AdministradorBanco adminBanco(&buscadorAhorro, &buscadorCorriente, &lectorAhorro, &lectorCorriente);
     Registrador registrador(&cuentaAhorro, &cuentaCorriente, &adminBanco);
+    Ordenador ordenador(&cuentaAhorro, &cuentaCorriente);
+    CalculadoraHash calculadoraHash(&cuentaAhorro, &cuentaCorriente);  // Objeto hash
 
     vector<string> opcionesMenu = {
         "Registrar nuevo cliente",
@@ -50,6 +53,7 @@ int main() {
         "Crear backup de cuentas",
         "Restaurar backup de cuentas",
         "Ordenar y mostrar cuentas",
+        "Generar hashes MD5 del archivo binario",   // Nueva opción
         "Salir"
     };
 
@@ -210,8 +214,6 @@ int main() {
                 MenuInteractivo menuOrden(opcionesOrden);
                 int criterio = menuOrden.ejecutar();
 
-                Ordenador ordenador(&cuentaAhorro, &cuentaCorriente);
-
                 if (criterio == 1) {
                     ordenador.ordenarPorNombre(true);
                     ordenador.ordenarPorNombre(false);
@@ -223,7 +225,12 @@ int main() {
             }
 
             case 10:
-                cout << "\nGracias por usar el sistema bancario. \u00a1Hasta pronto!" << endl;
+                calculadoraHash.generarArchivoHash("hashes_md5.txt");
+                cout << "\nArchivo de hashes generado: hashes_md5.txt\n";
+                break;
+
+            case 11:
+                cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 salir = true;
                 break;
         }

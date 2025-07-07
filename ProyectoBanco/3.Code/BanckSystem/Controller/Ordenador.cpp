@@ -1,6 +1,7 @@
 #include "Ordenador.h"
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 using namespace std;
 
@@ -37,7 +38,7 @@ void Ordenador::ordenarPorNumeroCuenta(bool esAhorro) {
         registros.push_back(r);
     }
 
-    quickSort(registros, 0, registros.size() - 1, false);
+    bucketSort(registros);  // Reemplazo del QuickSort
     imprimir(registros, esAhorro);
 }
 
@@ -50,18 +51,58 @@ void Ordenador::quickSort(vector<Registro>& vec, int low, int high, bool ordenar
 }
 
 int Ordenador::partition(vector<Registro>& vec, int low, int high, bool ordenarPorNombre) {
-    string pivot = ordenarPorNombre ? vec[high].nombre : vec[high].numeroCuenta;
+    Registro pivot = vec[high];
     int i = low - 1;
 
     for (int j = low; j < high; ++j) {
-        string valor = ordenarPorNombre ? vec[j].nombre : vec[j].numeroCuenta;
-        if (valor < pivot) {
+        bool menor;
+        if (ordenarPorNombre) {
+            if (vec[j].nombre != pivot.nombre) {
+                menor = vec[j].nombre < pivot.nombre;
+            } else if (vec[j].cedula != pivot.cedula) {
+                menor = vec[j].cedula < pivot.cedula;
+            } else {
+                menor = vec[j].numeroCuenta < pivot.numeroCuenta;
+            }
+        } else {
+            if (vec[j].numeroCuenta != pivot.numeroCuenta) {
+                menor = vec[j].numeroCuenta < pivot.numeroCuenta;
+            } else if (vec[j].nombre != pivot.nombre) {
+                menor = vec[j].nombre < pivot.nombre;
+            } else {
+                menor = vec[j].cedula < pivot.cedula;
+            }
+        }
+
+        if (menor) {
             ++i;
             swap(vec[i], vec[j]);
         }
     }
+
     swap(vec[i + 1], vec[high]);
     return i + 1;
+}
+
+void Ordenador::bucketSort(vector<Registro>& registros) {
+    const int numBuckets = 10;
+    vector<vector<Registro>> buckets(numBuckets);
+
+    for (const auto& r : registros) {
+        string numStr = r.numeroCuenta.substr(2);
+        int numero = stoi(numStr);
+
+        int index = (numero / 100) % numBuckets;
+        buckets[index].push_back(r);
+    }
+
+    registros.clear();
+    for (auto& bucket : buckets) {
+        sort(bucket.begin(), bucket.end(), [](const Registro& a, const Registro& b) {
+            return a.numeroCuenta < b.numeroCuenta;
+        });
+        registros.insert(registros.end(), bucket.begin(), bucket.end());
+    }
 }
 
 void Ordenador::imprimir(const vector<Registro>& vec, bool esAhorro) {
@@ -71,18 +112,15 @@ void Ordenador::imprimir(const vector<Registro>& vec, bool esAhorro) {
     cout << left
          << setw(20) << "Nombre"
          << setw(15) << "Cedula"
-         << setw(20) << "Cuenta"
-         << setw(10) << "Saldo" << "\n";
+         << setw(20) << "Cuenta" << "\n";
 
-    cout << string(65, '-') << "\n";
+    cout << string(55, '-') << "\n";
 
     for (const auto& r : vec) {
         cout << left
              << setw(20) << r.nombre
              << setw(15) << r.cedula
              << setw(20) << r.numeroCuenta
-             << fixed << setprecision(2)
-             << "$" << setw(9) << r.saldo
              << "\n";
     }
 

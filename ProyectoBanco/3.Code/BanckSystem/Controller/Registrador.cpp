@@ -2,12 +2,12 @@
 #include "../Model/Persona.h"
 #include "../Model/Fecha.h"
 #include "../Model/Validador.h"
+#include "../View/MenuInteractivo.h"
 #include <iostream>
 #include <string>
 #include <limits>
 #include <conio.h>
 #include <map>
-#include <cctype>
 
 using namespace std;
 
@@ -25,7 +25,7 @@ void Registrador::registrar() {
             cout << "Ingrese la cedula: ";
             while (true) {
                 c = getch();
-                if (c >= '0' && c <= '9' && cedula.length() < 10) {
+                if (isdigit(c) && cedula.length() < 10) {
                     cout << c;
                     cedula += c;
                 } else if (c == 8 && !cedula.empty()) {
@@ -39,7 +39,7 @@ void Registrador::registrar() {
             Validador::validar(cedula, "cedula");
 
             if (administradorBanco->estaRegistrada(cedula)) {
-                cout << "La cédula ya está registrada. Saltando registro de datos personales.\n";
+                cout << "La cédula ya está registrada. Saltando ingreso de datos personales.\n";
             }
             break;
         } catch (const invalid_argument& e) {
@@ -55,7 +55,7 @@ void Registrador::registrar() {
                 cout << "Ingrese el nombre: ";
                 while (true) {
                     c = getch();
-                    if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+                    if (isalpha(c)) {
                         cout << c;
                         nombre += c;
                     } else if (c == 8 && !nombre.empty()) {
@@ -80,7 +80,7 @@ void Registrador::registrar() {
                 cout << "Ingrese el apellido: ";
                 while (true) {
                     c = getch();
-                    if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+                    if (isalpha(c)) {
                         cout << c;
                         apellido += c;
                     } else if (c == 8 && !apellido.empty()) {
@@ -116,7 +116,7 @@ void Registrador::registrar() {
                 cout << "Ingrese el telefono: ";
                 while (true) {
                     c = getch();
-                    if (c >= '0' && c <= '9' && telefono.length() < 15) {
+                    if (isdigit(c) && telefono.length() < 15) {
                         cout << c;
                         telefono += c;
                     } else if (c == 8 && !telefono.empty()) {
@@ -140,40 +140,31 @@ void Registrador::registrar() {
 
     Persona persona(cedula, nombre, apellido, correo, telefono, fechaNacimiento);
 
-    int tipoCuenta;
-    cout << "Tipo de cuenta (1: Ahorro, 2: Corriente): ";
-    cin >> tipoCuenta;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    MenuInteractivo menuTipo({ "Cuenta de Ahorro", "Cuenta Corriente" });
+    int tipoCuenta = menuTipo.ejecutar();
 
     if (tipoCuenta == 1) {
         map<int, pair<string, string>> sucursalesPichincha = {
             {1, {"Quito", "01"}},
-            {2, {"Rumiñahui", "02"}},
+            {2, {"Ruminiahui", "02"}},
             {3, {"Cayambe", "03"}},
-            {4, {"Mejía", "04"}},
+            {4, {"Mejia", "04"}},
             {5, {"Pedro Moncayo", "05"}},
             {6, {"Pedro Vicente Maldonado", "06"}},
             {7, {"Puerto Quito", "07"}},
             {8, {"San Miguel de los Bancos", "08"}}
-};
+        };
 
-        int opcionSucursal = 0;
-        cout << "\nSeleccione la ciudad donde se genera la cuenta:\n";
+        vector<string> nombresSucursales;
         for (const auto& s : sucursalesPichincha) {
-            cout << s.first << ". " << s.second.first << "\n";
-        }
-        cout << "Opcion: ";
-        cin >> opcionSucursal;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-        if (sucursalesPichincha.count(opcionSucursal) == 0) {
-            cout << "Opción de ciudad inválida. Cancelando registro.\n";
-            return;
+            nombresSucursales.push_back(s.second.first);
         }
 
-        string codigoSucursal = sucursalesPichincha[opcionSucursal].second;
+        MenuInteractivo menuSucursal(nombresSucursales);
+        int seleccion = menuSucursal.ejecutar();
+        string codigoSucursal = sucursalesPichincha[seleccion].second;
+
         cuentaAhorro->setCodigoSucursal(codigoSucursal);
-
         cuentaAhorro->agregarCuenta(
             persona.getCedula(),
             persona.getNombre(),
@@ -181,7 +172,6 @@ void Registrador::registrar() {
             0.0
         );
         cout << "Cuenta de ahorro registrada exitosamente.\n";
-        administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
 
     } else if (tipoCuenta == 2) {
         cuentaCorriente->agregarCuenta(
@@ -191,10 +181,12 @@ void Registrador::registrar() {
             0.0
         );
         cout << "Cuenta corriente registrada exitosamente.\n";
-        administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
     } else {
         cout << "Tipo de cuenta invalido.\n";
+        return;
     }
+
+    administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
 
     cout << "\nPresione Enter para continuar...";
     cin.get();
