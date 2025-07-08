@@ -17,6 +17,7 @@
 #include "../View/MenuInteractivo.h"
 #include "../Controller/CalculadoraHash.h"
 #include "../Controller/CreadorQR.h"
+#include "../View/Marquesina.h"
 
 using namespace std;
 
@@ -26,6 +27,9 @@ void limpiarBuffer() {
 }
 
 int main() {
+    Marquesina marquesina;
+    marquesina.iniciar();
+
     CuentaAhorro cuentaAhorro;
     CuentaCorriente cuentaCorriente;
 
@@ -251,5 +255,8 @@ int main() {
     }
 
     binario.guardarCuentas(cuentaAhorro, cuentaCorriente);
+
+    marquesina.detener();
+
     return 0;
 }
