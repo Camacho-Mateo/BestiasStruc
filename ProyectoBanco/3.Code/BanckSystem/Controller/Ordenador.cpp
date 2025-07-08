@@ -38,7 +38,7 @@ void Ordenador::ordenarPorNumeroCuenta(bool esAhorro) {
         registros.push_back(r);
     }
 
-    bucketSort(registros);  // Reemplazo del QuickSort
+    bucketSort(registros);
     imprimir(registros, esAhorro);
 }
 
@@ -108,7 +108,6 @@ void Ordenador::bucketSort(vector<Registro>& registros) {
 void Ordenador::imprimir(const vector<Registro>& vec, bool esAhorro) {
     cout << "\n=== Cuentas " << (esAhorro ? "de Ahorro" : "Corrientes") << " Ordenadas ===\n\n";
 
-    // Encabezado de tabla
     cout << left
          << setw(20) << "Nombre"
          << setw(15) << "Cedula"

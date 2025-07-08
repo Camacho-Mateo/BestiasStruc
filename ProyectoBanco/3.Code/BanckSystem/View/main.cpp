@@ -15,7 +15,8 @@
 #include "../Model/Validador.h"
 #include "../Controller/Ordenador.h"
 #include "../View/MenuInteractivo.h"
-#include "../Controller/CalculadoraHash.h"  // <-- Incluido para Hash
+#include "../Controller/CalculadoraHash.h"
+#include "../Controller/CreadorQR.h"
 
 using namespace std;
 
@@ -41,7 +42,8 @@ int main() {
     AdministradorBanco adminBanco(&buscadorAhorro, &buscadorCorriente, &lectorAhorro, &lectorCorriente);
     Registrador registrador(&cuentaAhorro, &cuentaCorriente, &adminBanco);
     Ordenador ordenador(&cuentaAhorro, &cuentaCorriente);
-    CalculadoraHash calculadoraHash(&cuentaAhorro, &cuentaCorriente);  // Objeto hash
+    CalculadoraHash calculadoraHash(&cuentaAhorro, &cuentaCorriente);
+    CreadorQR creadorQR(&cuentaAhorro, &cuentaCorriente);
 
     vector<string> opcionesMenu = {
         "Registrar nuevo cliente",
@@ -53,7 +55,8 @@ int main() {
         "Crear backup de cuentas",
         "Restaurar backup de cuentas",
         "Ordenar y mostrar cuentas",
-        "Generar hashes MD5 del archivo binario",   // Nueva opción
+        "Generar hashes MD5 del archivo binario",
+        "Generar QR de usuarios",
         "Salir"
     };
 
@@ -230,6 +233,11 @@ int main() {
                 break;
 
             case 11:
+                creadorQR.generarPDFs();
+                cout << "\nQRs generados exitosamente para todos los usuarios.\n";
+                break;
+
+            case 12:
                 cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 salir = true;
                 break;
