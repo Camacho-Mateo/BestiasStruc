@@ -7,8 +7,8 @@
 #include <chrono>
 #include <ctime>
 
-using namespace std;
 namespace fs = std::filesystem;
+using namespace std;
 
 void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, const CuentaCorriente& cuentaCorriente) {
     ofstream archivo("./cuentas.bin", ios::binary);
@@ -16,8 +16,6 @@ void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, cons
         cerr << "Error al abrir archivo para guardar cuentas." << endl;
         return;
     }
-
-    cout << "[DEBUG] Guardando cuentas en ./cuentas.bin..." << endl;
 
     size_t totalAhorro = cuentaAhorro.getTotalCuentas();
     archivo.write(reinterpret_cast<const char*>(&totalAhorro), sizeof(totalAhorro));
@@ -38,6 +36,9 @@ void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, cons
         escribirString(cuentaAhorro.getTelefono(i));
         escribirString(cuentaAhorro.getCorreo(i));
         escribirString(cuentaAhorro.getSucursal(i));
+
+        // Fecha de registro agregada
+        escribirString(cuentaAhorro.getFechaRegistro(i));
     }
 
     size_t totalCorriente = cuentaCorriente.getTotalCuentas();
@@ -59,10 +60,12 @@ void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, cons
         escribirString(cuentaCorriente.getTelefono(i));
         escribirString(cuentaCorriente.getCorreo(i));
         escribirString(cuentaCorriente.getSucursal(i));
+
+        // Fecha de registro agregada
+        escribirString(cuentaCorriente.getFechaRegistro(i));
     }
 
     archivo.close();
-    cout << "[DEBUG] Archivo cuentas.bin guardado con éxito." << endl;
 }
 
 void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorriente& cuentaCorriente) {
@@ -71,8 +74,6 @@ void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorri
         cerr << "No se pudo abrir archivo para cargar cuentas desde ./cuentas.bin." << endl;
         return;
     }
-
-    cout << "[DEBUG] Cargando cuentas desde ./cuentas.bin..." << endl;
 
     cuentaAhorro = CuentaAhorro();
     cuentaCorriente = CuentaCorriente();
@@ -98,7 +99,9 @@ void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorri
         string correo = leerString(archivo);
         string sucursal = leerString(archivo);
 
-        cuentaAhorro.agregarCuenta(cedula, nombre, numeroCuenta, saldo, telefono, correo, sucursal);
+        string fechaRegistro = leerString(archivo);
+
+        cuentaAhorro.agregarCuenta(cedula, nombre, numeroCuenta, saldo, telefono, correo, sucursal, fechaRegistro);
     }
 
     size_t totalCorriente = 0;
@@ -114,11 +117,12 @@ void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorri
         string correo = leerString(archivo);
         string sucursal = leerString(archivo);
 
-        cuentaCorriente.agregarCuenta(cedula, nombre, numeroCuenta, saldo, telefono, correo, sucursal);
+        string fechaRegistro = leerString(archivo);
+
+        cuentaCorriente.agregarCuenta(cedula, nombre, numeroCuenta, saldo, telefono, correo, sucursal, fechaRegistro);
     }
 
     archivo.close();
-    cout << "[DEBUG] Archivo cuentas.bin cargado con éxito." << endl;
 }
 
 void AdministradorBinario::crearBackup() {
@@ -130,7 +134,11 @@ void AdministradorBinario::crearBackup() {
     auto ahora = chrono::system_clock::now();
     time_t tiempoActual = chrono::system_clock::to_time_t(ahora);
     tm tiempoLocal;
-    localtime_s(&tiempoLocal, &tiempoActual);  // Compatible con Windows
+#ifdef _WIN32
+    localtime_s(&tiempoLocal, &tiempoActual);
+#else
+    localtime_r(&tiempoActual, &tiempoLocal);
+#endif
 
     stringstream nombreArchivo;
     nombreArchivo << carpetaBackup.string() << "/backup_"
@@ -148,7 +156,7 @@ void AdministradorBinario::crearBackup() {
     origen.close();
     destino.close();
 
-    cout << "[DEBUG] Copia de seguridad creada exitosamente como " << nombreArchivo.str() << endl;
+    cout << "Copia de seguridad creada exitosamente como " << nombreArchivo.str() << endl;
 }
 
 void AdministradorBinario::restaurarBackup() {
@@ -168,7 +176,7 @@ void AdministradorBinario::restaurarBackup() {
         ofstream copiaSeguridad("./backup.bin", ios::binary);
         if (archivoActual && copiaSeguridad) {
             copiaSeguridad << archivoActual.rdbuf();
-            cout << "[DEBUG] Copia de seguridad temporal creada como backup.bin antes de restaurar." << endl;
+            cout << "Copia de seguridad temporal creada como backup.bin antes de restaurar." << endl;
         } else {
             cerr << "Advertencia: No se pudo crear copia de seguridad temporal." << endl;
         }
@@ -193,5 +201,5 @@ void AdministradorBinario::restaurarBackup() {
     backup.close();
     cuentas.close();
 
-    cout << "[DEBUG] Restauración completada desde " << rutaBackup << " a cuentas.bin" << endl;
+    cout << "Restauración completada desde " << rutaBackup << " a cuentas.bin" << endl;
 }

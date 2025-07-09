@@ -8,11 +8,20 @@
 #include <limits>
 #include <conio.h>
 #include <map>
+#include <ctime>
 
 using namespace std;
 
 Registrador::Registrador(CuentaAhorro* ca, CuentaCorriente* cc, AdministradorBanco* ab)
     : cuentaAhorro(ca), cuentaCorriente(cc), administradorBanco(ab) {}
+
+std::string obtenerFechaActual() {
+    time_t t = time(nullptr);
+    tm* now = localtime(&t);
+    char buffer[11];
+    strftime(buffer, sizeof(buffer), "%d/%m/%Y", now);
+    return string(buffer);
+}
 
 void Registrador::registrar() {
     string cedula;
@@ -51,7 +60,6 @@ void Registrador::registrar() {
 
         bool encontrado = false;
 
-        // Buscar en CuentaAhorro
         size_t totalAhorro = cuentaAhorro->getTotalCuentas();
         for (size_t i = 0; i < totalAhorro; ++i) {
             if (cuentaAhorro->getCedula(i) == cedula) {
@@ -64,7 +72,6 @@ void Registrador::registrar() {
             }
         }
 
-        // Si no está en CuentaAhorro, buscar en CuentaCorriente
         if (!encontrado) {
             size_t totalCorriente = cuentaCorriente->getTotalCuentas();
             for (size_t i = 0; i < totalCorriente; ++i) {
@@ -84,7 +91,6 @@ void Registrador::registrar() {
             return;
         }
     } else {
-        // Pide nombre
         while (true) {
             try {
                 char c;
@@ -110,7 +116,6 @@ void Registrador::registrar() {
             }
         }
 
-        // Pide apellido
         while (true) {
             try {
                 char c;
@@ -136,7 +141,6 @@ void Registrador::registrar() {
             }
         }
 
-        // Pide correo
         while (true) {
             try {
                 cout << "Ingrese el correo: ";
@@ -148,7 +152,6 @@ void Registrador::registrar() {
             }
         }
 
-        // Pide teléfono
         while (true) {
             try {
                 char c;
@@ -179,7 +182,6 @@ void Registrador::registrar() {
 
         nombre = nombre + " " + apellido;
 
-        // Preguntar la sucursal para nuevo registro
         map<int, pair<string, string>> sucursalesPichincha = {
             {1, {"Quito", "01"}},
             {2, {"Ruminiahui", "02"}},
@@ -201,12 +203,12 @@ void Registrador::registrar() {
         codigoSucursal = sucursalesPichincha[seleccion].second;
     }
 
-    // Menú para elegir tipo de cuenta
+    string fechaRegistro = obtenerFechaActual();
+
     MenuInteractivo menuTipo({ "Cuenta de Ahorro", "Cuenta Corriente" });
     int tipoCuenta = menuTipo.ejecutar();
 
-    // Crear la cuenta con los datos correspondientes
-    if (tipoCuenta == 1) {  // Cuenta Ahorro
+    if (tipoCuenta == 1) {
         cuentaAhorro->setCodigoSucursal(codigoSucursal);
         cuentaAhorro->agregarCuenta(
             cedula,
@@ -215,11 +217,12 @@ void Registrador::registrar() {
             0.0,
             telefono,
             correo,
-            codigoSucursal
+            codigoSucursal,
+            fechaRegistro
         );
         cout << "Cuenta de ahorro registrada exitosamente.\n";
 
-    } else if (tipoCuenta == 2) {  // Cuenta Corriente
+    } else if (tipoCuenta == 2) {
         cuentaCorriente->setCodigoSucursal(codigoSucursal);
         cuentaCorriente->agregarCuenta(
             cedula,
@@ -228,7 +231,8 @@ void Registrador::registrar() {
             0.0,
             telefono,
             correo,
-            codigoSucursal
+            codigoSucursal,
+            fechaRegistro
         );
         cout << "Cuenta corriente registrada exitosamente.\n";
 

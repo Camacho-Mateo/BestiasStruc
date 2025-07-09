@@ -39,6 +39,48 @@ std::string CuentaAhorro::getSucursal(size_t index) const {
     return (index < sucursales.size()) ? sucursales[index] : "";
 }
 
+std::string CuentaAhorro::getFechaRegistro(size_t index) const {
+    return (index < fechasRegistro.size()) ? fechasRegistro[index] : "";
+}
+
+// Setters
+
+void CuentaAhorro::setCedula(size_t index, const std::string& nuevaCedula) {
+    if (index < cedulas.size()) {
+        cedulas[index] = nuevaCedula;
+    }
+}
+
+void CuentaAhorro::setNombre(size_t index, const std::string& nuevoNombre) {
+    if (index < nombres.size()) {
+        nombres[index] = nuevoNombre;
+    }
+}
+
+void CuentaAhorro::setTelefono(size_t index, const std::string& nuevoTelefono) {
+    if (index < telefonos.size()) {
+        telefonos[index] = nuevoTelefono;
+    }
+}
+
+void CuentaAhorro::setCorreo(size_t index, const std::string& nuevoCorreo) {
+    if (index < correos.size()) {
+        correos[index] = nuevoCorreo;
+    }
+}
+
+void CuentaAhorro::setSucursal(size_t index, const std::string& nuevaSucursal) {
+    if (index < sucursales.size()) {
+        sucursales[index] = nuevaSucursal;
+    }
+}
+
+void CuentaAhorro::setFechaRegistro(size_t index, const std::string& nuevaFecha) {
+    if (index < fechasRegistro.size()) {
+        fechasRegistro[index] = nuevaFecha;
+    }
+}
+
 void CuentaAhorro::setSaldo(size_t index, double nuevoSaldo) {
     if (index < saldos.size()) {
         saldos[index] = nuevoSaldo;
@@ -48,7 +90,8 @@ void CuentaAhorro::setSaldo(size_t index, double nuevoSaldo) {
 void CuentaAhorro::agregarCuenta(const std::string& cedula, const std::string& nombre,
                                  const std::string& numeroCuenta, double saldoInicial,
                                  const std::string& telefono, const std::string& correo,
-                                 const std::string& sucursal) {
+                                 const std::string& sucursal,
+                                 const std::string& fechaRegistro) {
     cedulas.push_back(cedula);
     nombres.push_back(nombre);
     numerosCuenta.push_back(numeroCuenta);
@@ -56,9 +99,10 @@ void CuentaAhorro::agregarCuenta(const std::string& cedula, const std::string& n
     telefonos.push_back(telefono);
     correos.push_back(correo);
     sucursales.push_back(sucursal);
+    fechasRegistro.push_back(fechaRegistro);
 
     if (numeroCuenta.rfind("AH", 0) == 0 && numeroCuenta.length() > 4) {
-        size_t num = std::stoi(numeroCuenta.substr(5)); // "AH" + código sucursal + "-"
+        size_t num = std::stoi(numeroCuenta.substr(5));
         if (num > contadorCuentas) {
             contadorCuentas = num;
         }

@@ -1,11 +1,14 @@
-#ifndef CUENTACORRIENTE_H
-#define CUENTACORRIENTE_H
+#ifndef CUENTA_CORRIENTE_H
+#define CUENTA_CORRIENTE_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
 class CuentaCorriente {
 private:
+    static size_t contadorCuentas;
+    std::string codigoSucursal;
+
     std::vector<std::string> cedulas;
     std::vector<std::string> nombres;
     std::vector<std::string> numerosCuenta;
@@ -13,9 +16,7 @@ private:
     std::vector<std::string> telefonos;
     std::vector<std::string> correos;
     std::vector<std::string> sucursales;
-
-    std::string codigoSucursal;
-    static size_t contadorCuentas;
+    std::vector<std::string> fechasRegistro;
 
 public:
     CuentaCorriente();
@@ -29,13 +30,21 @@ public:
     std::string getTelefono(size_t index) const;
     std::string getCorreo(size_t index) const;
     std::string getSucursal(size_t index) const;
+    std::string getFechaRegistro(size_t index) const;
 
+    void setCedula(size_t index, const std::string& nuevaCedula);
+    void setNombre(size_t index, const std::string& nuevoNombre);
+    void setTelefono(size_t index, const std::string& nuevoTelefono);
+    void setCorreo(size_t index, const std::string& nuevoCorreo);
+    void setSucursal(size_t index, const std::string& nuevaSucursal);
+    void setFechaRegistro(size_t index, const std::string& nuevaFecha);
     void setSaldo(size_t index, double nuevoSaldo);
 
     void agregarCuenta(const std::string& cedula, const std::string& nombre,
                        const std::string& numeroCuenta, double saldoInicial,
                        const std::string& telefono, const std::string& correo,
-                       const std::string& sucursal);
+                       const std::string& sucursal,
+                       const std::string& fechaRegistro);
 
     std::string generarNumeroCuenta();
 

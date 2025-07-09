@@ -1,11 +1,11 @@
-#ifndef ADMINISTRADORBANCO_H
-#define ADMINISTRADORBANCO_H
+#ifndef ADMINISTRADOR_BANCO_H
+#define ADMINISTRADOR_BANCO_H
 
 #include <string>
+#include <map>
+#include "Persona.h"
 #include "../Controller/Buscador.h"
 #include "../Controller/Lector.h"
-
-using namespace std;
 
 class AdministradorBanco {
 private:
@@ -14,14 +14,19 @@ private:
     Lector* lectorAhorro;
     Lector* lectorCorriente;
 
+    std::map<std::string, Persona> personas;
+
 public:
     AdministradorBanco(Buscador* buscadorAhorro, Buscador* buscadorCorriente,
-                      Lector* lectorAhorro, Lector* lectorCorriente);
+                       Lector* lectorAhorro, Lector* lectorCorriente);
 
-    void buscarPorCedula(const string& cedula);
+    void buscarPorCedula(const std::string& cedula);
     void buscarPorNumeroCuenta();
 
-    bool estaRegistrada(const string& cedula);
+    bool estaRegistrada(const std::string& cedula);
+
+    void agregarPersona(const Persona& persona);
+    Persona obtenerPersona(const std::string& cedula) const;
 };
 
 #endif

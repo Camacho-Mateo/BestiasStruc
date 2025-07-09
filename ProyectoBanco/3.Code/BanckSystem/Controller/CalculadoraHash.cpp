@@ -1,4 +1,3 @@
-// CalculadoraHash.cpp
 #include "CalculadoraHash.h"
 #include "MD5.h"
 #include <fstream>

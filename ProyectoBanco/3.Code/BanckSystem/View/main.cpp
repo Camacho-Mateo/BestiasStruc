@@ -20,6 +20,7 @@
 #include "../View/Marquesina.h"
 #include "../View/MenuAyuda.h"
 #include "../Controller/Criptador.h"
+#include "../Controller/Editor.h"    // <-- Incluido Editor
 
 using namespace std;
 
@@ -47,6 +48,7 @@ int main() {
     Cajero cajero(&cuentaAhorro, &cuentaCorriente, &buscadorAhorro, &binario);
     AdministradorBanco adminBanco(&buscadorAhorro, &buscadorCorriente, &lectorAhorro, &lectorCorriente);
     Registrador registrador(&cuentaAhorro, &cuentaCorriente, &adminBanco);
+    Editor editor(&cuentaAhorro, &cuentaCorriente, &adminBanco);  // <-- Nueva instancia
     Ordenador ordenador(&cuentaAhorro, &cuentaCorriente);
     CalculadoraHash calculadoraHash(&cuentaAhorro, &cuentaCorriente);
     CreadorQR creadorQR(&cuentaAhorro, &cuentaCorriente);
@@ -66,6 +68,7 @@ int main() {
         "Generar hashes MD5 del archivo binario",
         "Generar QR de usuarios",
         "Encriptar backup existente",
+        "Editar cliente",       // <-- Nueva opción
         "Ayuda",
         "Salir"
     };
@@ -248,14 +251,18 @@ int main() {
                 break;
 
             case 12:
-                criptador.enigma();  // Llama al método de encriptación
+                criptador.enigma();
                 break;
 
             case 13:
-                menuAyuda.mostrarAyuda();
+                editor.ejecutar();  // <-- Nueva opción Ejecutar Editor
                 break;
 
             case 14:
+                menuAyuda.mostrarAyuda();
+                break;
+
+            case 15:
                 cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 salir = true;
                 break;
