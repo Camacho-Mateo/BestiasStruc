@@ -21,8 +21,9 @@
 #include "../View/MenuAyuda.h"
 #include "../Controller/Criptador.h"
 #include "../Controller/Editor.h"
-#include "../Model/Fecha.h"  // Incluye tu clase Fecha
-#include "../Controller/Secretario.h"  // <-- Agregado para agendar cita
+#include "../Model/Fecha.h"
+#include "../Controller/Secretario.h"
+#include "../Model/AVLArbol.h"   // <-- Incluida la clase AVL
 
 using namespace std;
 
@@ -59,6 +60,8 @@ int main() {
 
     Secretario secretario;  // <-- Instancia para agendar cita
 
+    AVLArbol arbolAVL;  // <-- Instancia árbol AVL para cuentas corrientes
+
     vector<string> opcionesMenu = {
         "Registrar nuevo cliente",
         "Buscar cliente (Administrador)",
@@ -75,7 +78,8 @@ int main() {
         "Encriptar backup existente",
         "Editar cliente",
         "Ayuda",
-        "Agendar cita",  // <-- Nueva opción agregada
+        "Agendar cita",
+        "Generar árbol AVL de cuentas corrientes",  // <-- NUEVA OPCIÓN
         "Salir"
     };
 
@@ -108,14 +112,13 @@ int main() {
                 } else if (subopcion == 2) {
                     adminBanco.buscarPorNumeroCuenta();
                 } else if (subopcion == 3) {
-                    // Aquí pedimos la fecha con validación encapsulada en Fecha
                     Fecha fechaObj;
                     cout << "\nIngrese la fecha de registro:\n";
                     fechaObj.pedirFecha();
 
                     string fecha = fechaObj.getFecha();
 
-                    cout << "\nResultados de la búsqueda para fecha: " << fecha << endl;
+                    cout << "\nResultados de la busqueda para fecha: " << fecha << endl;
 
                     vector<int> resultadosAhorro = buscadorAhorro.buscarPorFecha(fecha, true);
                     if (!resultadosAhorro.empty()) {
@@ -314,11 +317,18 @@ int main() {
                 menuAyuda.mostrarAyuda();
                 break;
 
-            case 16:  // <-- Nueva opción Agendar cita
+            case 16:  // Agendar cita
                 secretario.agendar();
                 break;
 
-            case 17:
+            case 17:  
+                cout << "\nGenerando arbol AVL con cuentas corrientes desde archivo binario...\n";
+                arbolAVL.cargarCuentasCorrientesDesdeBinario("./cuentas.bin");
+                cout << "Arbol AVL generado. Mostrando arbol:\n\n";
+                arbolAVL.imprimirArbolVertical();
+                break;
+
+            case 18:
                 cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 salir = true;
                 break;

@@ -11,62 +11,94 @@ namespace fs = std::filesystem;
 using namespace std;
 
 void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, const CuentaCorriente& cuentaCorriente) {
-    ofstream archivo("./cuentas.bin", ios::binary);
-    if (!archivo) {
+    ofstream archivoBin("./cuentas.bin", ios::binary);
+    if (!archivoBin) {
         cerr << "Error al abrir archivo para guardar cuentas." << endl;
         return;
     }
 
+    ofstream archivoTxt("./cuentas.txt");
+    if (!archivoTxt) {
+        cerr << "Error al abrir archivo para guardar reporte de cuentas." << endl;
+        return;
+    }
+
+    // Guardar cuentas de ahorro en binario y texto
     size_t totalAhorro = cuentaAhorro.getTotalCuentas();
-    archivo.write(reinterpret_cast<const char*>(&totalAhorro), sizeof(totalAhorro));
+    archivoBin.write(reinterpret_cast<const char*>(&totalAhorro), sizeof(totalAhorro));
+    archivoTxt << "CUENTAS DE AHORRO:\n\n";
     for (size_t i = 0; i < totalAhorro; ++i) {
-        auto escribirString = [&](const string& s) {
+        auto escribirStringBin = [&](const string& s) {
             size_t tam = s.size();
-            archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
-            archivo.write(s.c_str(), tam);
+            archivoBin.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+            archivoBin.write(s.c_str(), tam);
         };
 
-        escribirString(cuentaAhorro.getCedula(i));
-        escribirString(cuentaAhorro.getNombre(i));
-        escribirString(cuentaAhorro.getNumeroCuentaStr(i));
+        escribirStringBin(cuentaAhorro.getCedula(i));
+        escribirStringBin(cuentaAhorro.getNombre(i));
+        escribirStringBin(cuentaAhorro.getNumeroCuentaStr(i));
 
         double saldo = cuentaAhorro.getSaldo(i);
-        archivo.write(reinterpret_cast<const char*>(&saldo), sizeof(saldo));
+        archivoBin.write(reinterpret_cast<const char*>(&saldo), sizeof(saldo));
 
-        escribirString(cuentaAhorro.getTelefono(i));
-        escribirString(cuentaAhorro.getCorreo(i));
-        escribirString(cuentaAhorro.getSucursal(i));
+        escribirStringBin(cuentaAhorro.getTelefono(i));
+        escribirStringBin(cuentaAhorro.getCorreo(i));
+        escribirStringBin(cuentaAhorro.getSucursal(i));
 
-        // Fecha de registro agregada
-        escribirString(cuentaAhorro.getFechaRegistro(i));
+        escribirStringBin(cuentaAhorro.getFechaRegistro(i));
+
+        archivoTxt << "Cuenta #" << (i+1) << "\n"
+                   << "Cédula: " << cuentaAhorro.getCedula(i) << "\n"
+                   << "Nombre: " << cuentaAhorro.getNombre(i) << "\n"
+                   << "Número de cuenta: " << cuentaAhorro.getNumeroCuentaStr(i) << "\n"
+                   << "Saldo: " << saldo << "\n"
+                   << "Teléfono: " << cuentaAhorro.getTelefono(i) << "\n"
+                   << "Correo: " << cuentaAhorro.getCorreo(i) << "\n"
+                   << "Sucursal: " << cuentaAhorro.getSucursal(i) << "\n"
+                   << "Fecha registro: " << cuentaAhorro.getFechaRegistro(i) << "\n"
+                   << "---------------------------\n";
     }
 
+    // Guardar cuentas corrientes en binario y texto
     size_t totalCorriente = cuentaCorriente.getTotalCuentas();
-    archivo.write(reinterpret_cast<const char*>(&totalCorriente), sizeof(totalCorriente));
+    archivoBin.write(reinterpret_cast<const char*>(&totalCorriente), sizeof(totalCorriente));
+    archivoTxt << "\nCUENTAS CORRIENTES:\n\n";
     for (size_t i = 0; i < totalCorriente; ++i) {
-        auto escribirString = [&](const string& s) {
+        auto escribirStringBin = [&](const string& s) {
             size_t tam = s.size();
-            archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
-            archivo.write(s.c_str(), tam);
+            archivoBin.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+            archivoBin.write(s.c_str(), tam);
         };
 
-        escribirString(cuentaCorriente.getCedula(i));
-        escribirString(cuentaCorriente.getNombre(i));
-        escribirString(cuentaCorriente.getNumeroCuentaStr(i));
+        escribirStringBin(cuentaCorriente.getCedula(i));
+        escribirStringBin(cuentaCorriente.getNombre(i));
+        escribirStringBin(cuentaCorriente.getNumeroCuentaStr(i));
 
         double saldo = cuentaCorriente.getSaldo(i);
-        archivo.write(reinterpret_cast<const char*>(&saldo), sizeof(saldo));
+        archivoBin.write(reinterpret_cast<const char*>(&saldo), sizeof(saldo));
 
-        escribirString(cuentaCorriente.getTelefono(i));
-        escribirString(cuentaCorriente.getCorreo(i));
-        escribirString(cuentaCorriente.getSucursal(i));
+        escribirStringBin(cuentaCorriente.getTelefono(i));
+        escribirStringBin(cuentaCorriente.getCorreo(i));
+        escribirStringBin(cuentaCorriente.getSucursal(i));
 
-        // Fecha de registro agregada
-        escribirString(cuentaCorriente.getFechaRegistro(i));
+        escribirStringBin(cuentaCorriente.getFechaRegistro(i));
+
+        archivoTxt << "Cuenta #" << (i+1) << "\n"
+                   << "Cédula: " << cuentaCorriente.getCedula(i) << "\n"
+                   << "Nombre: " << cuentaCorriente.getNombre(i) << "\n"
+                   << "Número de cuenta: " << cuentaCorriente.getNumeroCuentaStr(i) << "\n"
+                   << "Saldo: " << saldo << "\n"
+                   << "Teléfono: " << cuentaCorriente.getTelefono(i) << "\n"
+                   << "Correo: " << cuentaCorriente.getCorreo(i) << "\n"
+                   << "Sucursal: " << cuentaCorriente.getSucursal(i) << "\n"
+                   << "Fecha registro: " << cuentaCorriente.getFechaRegistro(i) << "\n"
+                   << "---------------------------\n";
     }
 
-    archivo.close();
+    archivoBin.close();
+    archivoTxt.close();
 }
+
 
 void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorriente& cuentaCorriente) {
     ifstream archivo("./cuentas.bin", ios::binary);

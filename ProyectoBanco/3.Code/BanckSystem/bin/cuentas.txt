@@ -1,0 +1,65 @@
+CUENTAS DE AHORRO:
+
+Cuenta #1
+Cédula: 1723922967
+Nombre: mateo
+Número de cuenta: AH01-001001
+Saldo: 30
+Teléfono: 0989543483
+Correo: Mateo@gmail.com
+Sucursal: 01
+Fecha registro: 09/07/2025
+---------------------------
+Cuenta #2
+Cédula: 1716151392
+Nombre: Yadira Ponce
+Número de cuenta: AH01-001002
+Saldo: 0
+Teléfono: 0989543434
+Correo: yady@gmail.com
+Sucursal: 01
+Fecha registro: 09/07/2025
+---------------------------
+Cuenta #3
+Cédula: 1723922967
+Nombre: mateo
+Número de cuenta: AH01-001003
+Saldo: 0
+Teléfono: 0989543483
+Correo: Mateo@gmail.com
+Sucursal: 01
+Fecha registro: 09/07/2025
+---------------------------
+
+CUENTAS CORRIENTES:
+
+Cuenta #1
+Cédula: 1723922967
+Nombre: mateo
+Número de cuenta: CC01-002001
+Saldo: 0
+Teléfono: 0989543483
+Correo: Mateo@gmail.com
+Sucursal: 01
+Fecha registro: 09/07/2025
+---------------------------
+Cuenta #2
+Cédula: 1726473240
+Nombre: Jonathan Diaz
+Número de cuenta: CC01-002002
+Saldo: 0
+Teléfono: 0983342102
+Correo: ja@homai.com
+Sucursal: 01
+Fecha registro: 09/07/2025
+---------------------------
+Cuenta #3
+Cédula: 1723922967
+Nombre: mateo
+Número de cuenta: CC01-002003
+Saldo: 0
+Teléfono: 0989543483
+Correo: Mateo@gmail.com
+Sucursal: 01
+Fecha registro: 09/07/2025
+---------------------------
