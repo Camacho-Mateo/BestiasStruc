@@ -22,6 +22,7 @@
 #include "../Controller/Criptador.h"
 #include "../Controller/Editor.h"
 #include "../Model/Fecha.h"  // Incluye tu clase Fecha
+#include "../Controller/Secretario.h"  // <-- Agregado para agendar cita
 
 using namespace std;
 
@@ -56,6 +57,8 @@ int main() {
     MenuAyuda menuAyuda;
     Criptador criptador;
 
+    Secretario secretario;  // <-- Instancia para agendar cita
+
     vector<string> opcionesMenu = {
         "Registrar nuevo cliente",
         "Buscar cliente (Administrador)",
@@ -72,6 +75,7 @@ int main() {
         "Encriptar backup existente",
         "Editar cliente",
         "Ayuda",
+        "Agendar cita",  // <-- Nueva opción agregada
         "Salir"
     };
 
@@ -310,7 +314,11 @@ int main() {
                 menuAyuda.mostrarAyuda();
                 break;
 
-            case 16:
+            case 16:  // <-- Nueva opción Agendar cita
+                secretario.agendar();
+                break;
+
+            case 17:
                 cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 salir = true;
                 break;
