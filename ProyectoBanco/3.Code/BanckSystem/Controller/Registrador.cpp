@@ -15,9 +15,10 @@ Registrador::Registrador(CuentaAhorro* ca, CuentaCorriente* cc, AdministradorBan
     : cuentaAhorro(ca), cuentaCorriente(cc), administradorBanco(ab) {}
 
 void Registrador::registrar() {
-    string cedula, nombre, apellido, correo, telefono;
+    string cedula;
     Fecha fechaNacimiento;
 
+    // Pedir cédula y validar
     while (true) {
         try {
             char c;
@@ -37,17 +38,53 @@ void Registrador::registrar() {
             }
             cout << endl;
             Validador::validar(cedula, "cedula");
-
-            if (administradorBanco->estaRegistrada(cedula)) {
-                cout << "La cédula ya está registrada. Saltando ingreso de datos personales.\n";
-            }
             break;
         } catch (const invalid_argument& e) {
             cout << e.what() << endl;
         }
     }
 
-    if (!administradorBanco->estaRegistrada(cedula)) {
+    string nombre, apellido, correo, telefono, codigoSucursal;
+
+    if (administradorBanco->estaRegistrada(cedula)) {
+        cout << "La cédula ya está registrada. Se usarán los datos existentes.\n";
+
+        bool encontrado = false;
+
+        // Buscar en CuentaAhorro
+        size_t totalAhorro = cuentaAhorro->getTotalCuentas();
+        for (size_t i = 0; i < totalAhorro; ++i) {
+            if (cuentaAhorro->getCedula(i) == cedula) {
+                nombre = cuentaAhorro->getNombre(i);
+                correo = cuentaAhorro->getCorreo(i);
+                telefono = cuentaAhorro->getTelefono(i);
+                codigoSucursal = cuentaAhorro->getSucursal(i);
+                encontrado = true;
+                break;
+            }
+        }
+
+        // Si no está en CuentaAhorro, buscar en CuentaCorriente
+        if (!encontrado) {
+            size_t totalCorriente = cuentaCorriente->getTotalCuentas();
+            for (size_t i = 0; i < totalCorriente; ++i) {
+                if (cuentaCorriente->getCedula(i) == cedula) {
+                    nombre = cuentaCorriente->getNombre(i);
+                    correo = cuentaCorriente->getCorreo(i);
+                    telefono = cuentaCorriente->getTelefono(i);
+                    codigoSucursal = cuentaCorriente->getSucursal(i);
+                    encontrado = true;
+                    break;
+                }
+            }
+        }
+
+        if (!encontrado) {
+            cout << "Error: Cédula registrada pero no se encontraron datos asociados.\n";
+            return;
+        }
+    } else {
+        // Pide nombre
         while (true) {
             try {
                 char c;
@@ -73,6 +110,7 @@ void Registrador::registrar() {
             }
         }
 
+        // Pide apellido
         while (true) {
             try {
                 char c;
@@ -98,6 +136,7 @@ void Registrador::registrar() {
             }
         }
 
+        // Pide correo
         while (true) {
             try {
                 cout << "Ingrese el correo: ";
@@ -109,6 +148,7 @@ void Registrador::registrar() {
             }
         }
 
+        // Pide teléfono
         while (true) {
             try {
                 char c;
@@ -136,14 +176,10 @@ void Registrador::registrar() {
 
         cout << "Ingrese la fecha de nacimiento (DD/MM/AAAA):\n";
         fechaNacimiento.pedirFecha();
-    }
 
-    Persona persona(cedula, nombre, apellido, correo, telefono, fechaNacimiento);
+        nombre = nombre + " " + apellido;
 
-    MenuInteractivo menuTipo({ "Cuenta de Ahorro", "Cuenta Corriente" });
-    int tipoCuenta = menuTipo.ejecutar();
-
-    if (tipoCuenta == 1) {
+        // Preguntar la sucursal para nuevo registro
         map<int, pair<string, string>> sucursalesPichincha = {
             {1, {"Quito", "01"}},
             {2, {"Ruminiahui", "02"}},
@@ -162,25 +198,40 @@ void Registrador::registrar() {
 
         MenuInteractivo menuSucursal(nombresSucursales);
         int seleccion = menuSucursal.ejecutar();
-        string codigoSucursal = sucursalesPichincha[seleccion].second;
+        codigoSucursal = sucursalesPichincha[seleccion].second;
+    }
 
+    // Menú para elegir tipo de cuenta
+    MenuInteractivo menuTipo({ "Cuenta de Ahorro", "Cuenta Corriente" });
+    int tipoCuenta = menuTipo.ejecutar();
+
+    // Crear la cuenta con los datos correspondientes
+    if (tipoCuenta == 1) {  // Cuenta Ahorro
         cuentaAhorro->setCodigoSucursal(codigoSucursal);
         cuentaAhorro->agregarCuenta(
-            persona.getCedula(),
-            persona.getNombre(),
+            cedula,
+            nombre,
             cuentaAhorro->generarNumeroCuenta(),
-            0.0
+            0.0,
+            telefono,
+            correo,
+            codigoSucursal
         );
         cout << "Cuenta de ahorro registrada exitosamente.\n";
 
-    } else if (tipoCuenta == 2) {
+    } else if (tipoCuenta == 2) {  // Cuenta Corriente
+        cuentaCorriente->setCodigoSucursal(codigoSucursal);
         cuentaCorriente->agregarCuenta(
-            persona.getCedula(),
-            persona.getNombre(),
+            cedula,
+            nombre,
             cuentaCorriente->generarNumeroCuenta(),
-            0.0
+            0.0,
+            telefono,
+            correo,
+            codigoSucursal
         );
         cout << "Cuenta corriente registrada exitosamente.\n";
+
     } else {
         cout << "Tipo de cuenta invalido.\n";
         return;
@@ -189,5 +240,6 @@ void Registrador::registrar() {
     administradorBinario.guardarCuentas(*cuentaAhorro, *cuentaCorriente);
 
     cout << "\nPresione Enter para continuar...";
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     cin.get();
 }

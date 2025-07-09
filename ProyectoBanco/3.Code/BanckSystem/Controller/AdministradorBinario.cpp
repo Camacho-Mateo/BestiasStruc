@@ -22,45 +22,43 @@ void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, cons
     size_t totalAhorro = cuentaAhorro.getTotalCuentas();
     archivo.write(reinterpret_cast<const char*>(&totalAhorro), sizeof(totalAhorro));
     for (size_t i = 0; i < totalAhorro; ++i) {
-        string ced = cuentaAhorro.getCedula(i);
-        size_t tam = ced.size();
-        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
-        archivo.write(ced.c_str(), tam);
+        auto escribirString = [&](const string& s) {
+            size_t tam = s.size();
+            archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+            archivo.write(s.c_str(), tam);
+        };
 
-        string nom = cuentaAhorro.getNombre(i);
-        tam = nom.size();
-        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
-        archivo.write(nom.c_str(), tam);
-
-        string num = cuentaAhorro.getNumeroCuentaStr(i);
-        tam = num.size();
-        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
-        archivo.write(num.c_str(), tam);
+        escribirString(cuentaAhorro.getCedula(i));
+        escribirString(cuentaAhorro.getNombre(i));
+        escribirString(cuentaAhorro.getNumeroCuentaStr(i));
 
         double saldo = cuentaAhorro.getSaldo(i);
         archivo.write(reinterpret_cast<const char*>(&saldo), sizeof(saldo));
+
+        escribirString(cuentaAhorro.getTelefono(i));
+        escribirString(cuentaAhorro.getCorreo(i));
+        escribirString(cuentaAhorro.getSucursal(i));
     }
 
     size_t totalCorriente = cuentaCorriente.getTotalCuentas();
     archivo.write(reinterpret_cast<const char*>(&totalCorriente), sizeof(totalCorriente));
     for (size_t i = 0; i < totalCorriente; ++i) {
-        string ced = cuentaCorriente.getCedula(i);
-        size_t tam = ced.size();
-        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
-        archivo.write(ced.c_str(), tam);
+        auto escribirString = [&](const string& s) {
+            size_t tam = s.size();
+            archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
+            archivo.write(s.c_str(), tam);
+        };
 
-        string nom = cuentaCorriente.getNombre(i);
-        tam = nom.size();
-        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
-        archivo.write(nom.c_str(), tam);
-
-        string num = cuentaCorriente.getNumeroCuentaStr(i);
-        tam = num.size();
-        archivo.write(reinterpret_cast<const char*>(&tam), sizeof(tam));
-        archivo.write(num.c_str(), tam);
+        escribirString(cuentaCorriente.getCedula(i));
+        escribirString(cuentaCorriente.getNombre(i));
+        escribirString(cuentaCorriente.getNumeroCuentaStr(i));
 
         double saldo = cuentaCorriente.getSaldo(i);
         archivo.write(reinterpret_cast<const char*>(&saldo), sizeof(saldo));
+
+        escribirString(cuentaCorriente.getTelefono(i));
+        escribirString(cuentaCorriente.getCorreo(i));
+        escribirString(cuentaCorriente.getSucursal(i));
     }
 
     archivo.close();
@@ -79,52 +77,44 @@ void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorri
     cuentaAhorro = CuentaAhorro();
     cuentaCorriente = CuentaCorriente();
 
+    auto leerString = [&](ifstream& in) -> string {
+        size_t tam;
+        in.read(reinterpret_cast<char*>(&tam), sizeof(tam));
+        string s(tam, '\0');
+        in.read(&s[0], tam);
+        return s;
+    };
+
     size_t totalAhorro = 0;
     archivo.read(reinterpret_cast<char*>(&totalAhorro), sizeof(totalAhorro));
     for (size_t i = 0; i < totalAhorro; ++i) {
-        string cedula, nombre, numeroCuenta;
+        string cedula = leerString(archivo);
+        string nombre = leerString(archivo);
+        string numeroCuenta = leerString(archivo);
         double saldo;
-
-        size_t tam;
-        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
-        cedula.resize(tam);
-        archivo.read(&cedula[0], tam);
-
-        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
-        nombre.resize(tam);
-        archivo.read(&nombre[0], tam);
-
-        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
-        numeroCuenta.resize(tam);
-        archivo.read(&numeroCuenta[0], tam);
-
         archivo.read(reinterpret_cast<char*>(&saldo), sizeof(saldo));
 
-        cuentaAhorro.agregarCuenta(cedula, nombre, numeroCuenta, saldo);
+        string telefono = leerString(archivo);
+        string correo = leerString(archivo);
+        string sucursal = leerString(archivo);
+
+        cuentaAhorro.agregarCuenta(cedula, nombre, numeroCuenta, saldo, telefono, correo, sucursal);
     }
 
     size_t totalCorriente = 0;
     archivo.read(reinterpret_cast<char*>(&totalCorriente), sizeof(totalCorriente));
     for (size_t i = 0; i < totalCorriente; ++i) {
-        string cedula, nombre, numeroCuenta;
+        string cedula = leerString(archivo);
+        string nombre = leerString(archivo);
+        string numeroCuenta = leerString(archivo);
         double saldo;
-
-        size_t tam;
-        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
-        cedula.resize(tam);
-        archivo.read(&cedula[0], tam);
-
-        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
-        nombre.resize(tam);
-        archivo.read(&nombre[0], tam);
-
-        archivo.read(reinterpret_cast<char*>(&tam), sizeof(tam));
-        numeroCuenta.resize(tam);
-        archivo.read(&numeroCuenta[0], tam);
-
         archivo.read(reinterpret_cast<char*>(&saldo), sizeof(saldo));
 
-        cuentaCorriente.agregarCuenta(cedula, nombre, numeroCuenta, saldo);
+        string telefono = leerString(archivo);
+        string correo = leerString(archivo);
+        string sucursal = leerString(archivo);
+
+        cuentaCorriente.agregarCuenta(cedula, nombre, numeroCuenta, saldo, telefono, correo, sucursal);
     }
 
     archivo.close();
@@ -140,7 +130,7 @@ void AdministradorBinario::crearBackup() {
     auto ahora = chrono::system_clock::now();
     time_t tiempoActual = chrono::system_clock::to_time_t(ahora);
     tm tiempoLocal;
-    localtime_s(&tiempoLocal, &tiempoActual);  // ✅ Compatible con Windows
+    localtime_s(&tiempoLocal, &tiempoActual);  // Compatible con Windows
 
     stringstream nombreArchivo;
     nombreArchivo << carpetaBackup.string() << "/backup_"
@@ -205,4 +195,3 @@ void AdministradorBinario::restaurarBackup() {
 
     cout << "[DEBUG] Restauración completada desde " << rutaBackup << " a cuentas.bin" << endl;
 }
-

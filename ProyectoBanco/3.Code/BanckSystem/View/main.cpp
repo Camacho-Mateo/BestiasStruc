@@ -18,6 +18,8 @@
 #include "../Controller/CalculadoraHash.h"
 #include "../Controller/CreadorQR.h"
 #include "../View/Marquesina.h"
+#include "../View/MenuAyuda.h"
+#include "../Controller/Criptador.h"
 
 using namespace std;
 
@@ -48,6 +50,8 @@ int main() {
     Ordenador ordenador(&cuentaAhorro, &cuentaCorriente);
     CalculadoraHash calculadoraHash(&cuentaAhorro, &cuentaCorriente);
     CreadorQR creadorQR(&cuentaAhorro, &cuentaCorriente);
+    MenuAyuda menuAyuda;
+    Criptador criptador;
 
     vector<string> opcionesMenu = {
         "Registrar nuevo cliente",
@@ -61,6 +65,8 @@ int main() {
         "Ordenar y mostrar cuentas",
         "Generar hashes MD5 del archivo binario",
         "Generar QR de usuarios",
+        "Encriptar backup existente",
+        "Ayuda",
         "Salir"
     };
 
@@ -242,8 +248,20 @@ int main() {
                 break;
 
             case 12:
+                criptador.enigma();  // Llama al método de encriptación
+                break;
+
+            case 13:
+                menuAyuda.mostrarAyuda();
+                break;
+
+            case 14:
                 cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 salir = true;
+                break;
+
+            default:
+                cout << "Opcion invalida. Intente nuevamente." << endl;
                 break;
         }
 
@@ -255,7 +273,6 @@ int main() {
     }
 
     binario.guardarCuentas(cuentaAhorro, cuentaCorriente);
-
     marquesina.detener();
 
     return 0;

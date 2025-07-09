@@ -1,39 +1,46 @@
-#ifndef CUENTA_AHORRO_H
-#define CUENTA_AHORRO_H
+#ifndef CUENTAAHORRO_H
+#define CUENTAAHORRO_H
 
-#include <string>
 #include <vector>
+#include <string>
 
 class CuentaAhorro {
 private:
-    struct Cuenta {
-        std::string cedula;
-        std::string nombre;
-        std::string numeroCuenta;
-        double saldo;
-    };
+    std::vector<std::string> cedulas;
+    std::vector<std::string> nombres;
+    std::vector<std::string> numerosCuenta;
+    std::vector<double> saldos;
+    std::vector<std::string> telefonos;
+    std::vector<std::string> correos;
+    std::vector<std::string> sucursales;
 
-    std::vector<Cuenta> cuentas;
+    std::string codigoSucursal;
     static size_t contadorCuentas;
-    std::string codigoSucursal = "00";
 
 public:
     CuentaAhorro();
 
     size_t getTotalCuentas() const;
+
     std::string getCedula(size_t index) const;
     std::string getNombre(size_t index) const;
     std::string getNumeroCuentaStr(size_t index) const;
     double getSaldo(size_t index) const;
+    std::string getTelefono(size_t index) const;
+    std::string getCorreo(size_t index) const;
+    std::string getSucursal(size_t index) const;
+
     void setSaldo(size_t index, double nuevoSaldo);
 
     void agregarCuenta(const std::string& cedula, const std::string& nombre,
-                       const std::string& numeroCuenta, double saldoInicial);
-    
+                       const std::string& numeroCuenta, double saldoInicial,
+                       const std::string& telefono, const std::string& correo,
+                       const std::string& sucursal);
+
     std::string generarNumeroCuenta();
+
     void setCodigoSucursal(const std::string& codigo);
-    
-    static void setContador(size_t nuevoValor);
+    void setContador(size_t nuevoValor);
     static size_t getContador();
 };
 

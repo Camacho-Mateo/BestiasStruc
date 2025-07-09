@@ -3,54 +3,78 @@
 #include <iomanip>
 #include <cctype>
 
-using namespace std;
-
 size_t CuentaCorriente::contadorCuentas = 2000;
 
 CuentaCorriente::CuentaCorriente() {}
 
 size_t CuentaCorriente::getTotalCuentas() const {
-    return cuentas.size();
+    return cedulas.size();
 }
 
-string CuentaCorriente::getCedula(size_t index) const {
-    return (index < cuentas.size()) ? cuentas[index].cedula : "";
+std::string CuentaCorriente::getCedula(size_t index) const {
+    return (index < cedulas.size()) ? cedulas[index] : "";
 }
 
-string CuentaCorriente::getNombre(size_t index) const {
-    return (index < cuentas.size()) ? cuentas[index].nombre : "";
+std::string CuentaCorriente::getNombre(size_t index) const {
+    return (index < nombres.size()) ? nombres[index] : "";
 }
 
-string CuentaCorriente::getNumeroCuentaStr(size_t index) const {
-    return (index < cuentas.size()) ? cuentas[index].numeroCuenta : "";
+std::string CuentaCorriente::getNumeroCuentaStr(size_t index) const {
+    return (index < numerosCuenta.size()) ? numerosCuenta[index] : "";
 }
 
 double CuentaCorriente::getSaldo(size_t index) const {
-    return (index < cuentas.size()) ? cuentas[index].saldo : -1.0;
+    return (index < saldos.size()) ? saldos[index] : -1.0;
+}
+
+std::string CuentaCorriente::getTelefono(size_t index) const {
+    return (index < telefonos.size()) ? telefonos[index] : "";
+}
+
+std::string CuentaCorriente::getCorreo(size_t index) const {
+    return (index < correos.size()) ? correos[index] : "";
+}
+
+std::string CuentaCorriente::getSucursal(size_t index) const {
+    return (index < sucursales.size()) ? sucursales[index] : "";
 }
 
 void CuentaCorriente::setSaldo(size_t index, double nuevoSaldo) {
-    if (index < cuentas.size()) {
-        cuentas[index].saldo = nuevoSaldo;
+    if (index < saldos.size()) {
+        saldos[index] = nuevoSaldo;
     }
 }
 
-void CuentaCorriente::agregarCuenta(const string& cedula, const string& nombre,
-                                     const string& numeroCuenta, double saldoInicial) {
-    cuentas.push_back({cedula, nombre, numeroCuenta, saldoInicial});
+void CuentaCorriente::agregarCuenta(const std::string& cedula, const std::string& nombre,
+                                   const std::string& numeroCuenta, double saldoInicial,
+                                   const std::string& telefono, const std::string& correo,
+                                   const std::string& sucursal) {
+    cedulas.push_back(cedula);
+    nombres.push_back(nombre);
+    numerosCuenta.push_back(numeroCuenta);
+    saldos.push_back(saldoInicial);
+    telefonos.push_back(telefono);
+    correos.push_back(correo);
+    sucursales.push_back(sucursal);
 
     if (numeroCuenta.rfind("CC", 0) == 0 && numeroCuenta.length() > 5) {
-        size_t num = stoi(numeroCuenta.substr(5));
+        size_t num = std::stoi(numeroCuenta.substr(5));
         if (num > contadorCuentas) {
             contadorCuentas = num;
         }
     }
 }
 
-string CuentaCorriente::generarNumeroCuenta() {
-    ostringstream oss;
-    oss << "CC" << codigoSucursal << "-" << setw(6) << setfill('0') << ++contadorCuentas;
+std::string CuentaCorriente::generarNumeroCuenta() {
+    std::ostringstream oss;
+    oss << "CC" << codigoSucursal << "-" << std::setw(6) << std::setfill('0') << ++contadorCuentas;
     return oss.str();
+}
+
+void CuentaCorriente::setCodigoSucursal(const std::string& codigo) {
+    if (codigo.size() == 2 && std::isdigit(codigo[0]) && std::isdigit(codigo[1])) {
+        codigoSucursal = codigo;
+    }
 }
 
 void CuentaCorriente::setContador(size_t nuevoValor) {
@@ -59,10 +83,4 @@ void CuentaCorriente::setContador(size_t nuevoValor) {
 
 size_t CuentaCorriente::getContador() {
     return contadorCuentas;
-}
-
-void CuentaCorriente::setCodigoSucursal(const string& codigo) {
-    if (codigo.size() == 2 && isdigit(codigo[0]) && isdigit(codigo[1])) {
-        codigoSucursal = codigo;
-    }
 }
