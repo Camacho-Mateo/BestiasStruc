@@ -20,7 +20,8 @@
 #include "../View/Marquesina.h"
 #include "../View/MenuAyuda.h"
 #include "../Controller/Criptador.h"
-#include "../Controller/Editor.h"    // <-- Incluido Editor
+#include "../Controller/Editor.h"
+#include "../Model/Fecha.h"  // Incluye tu clase Fecha
 
 using namespace std;
 
@@ -48,7 +49,7 @@ int main() {
     Cajero cajero(&cuentaAhorro, &cuentaCorriente, &buscadorAhorro, &binario);
     AdministradorBanco adminBanco(&buscadorAhorro, &buscadorCorriente, &lectorAhorro, &lectorCorriente);
     Registrador registrador(&cuentaAhorro, &cuentaCorriente, &adminBanco);
-    Editor editor(&cuentaAhorro, &cuentaCorriente, &adminBanco);  // <-- Nueva instancia
+    Editor editor(&cuentaAhorro, &cuentaCorriente, &adminBanco);
     Ordenador ordenador(&cuentaAhorro, &cuentaCorriente);
     CalculadoraHash calculadoraHash(&cuentaAhorro, &cuentaCorriente);
     CreadorQR creadorQR(&cuentaAhorro, &cuentaCorriente);
@@ -66,9 +67,10 @@ int main() {
         "Restaurar backup de cuentas",
         "Ordenar y mostrar cuentas",
         "Generar hashes MD5 del archivo binario",
+        "Buscar cliente por hash MD5",
         "Generar QR de usuarios",
         "Encriptar backup existente",
-        "Editar cliente",       // <-- Nueva opción
+        "Editar cliente",
         "Ayuda",
         "Salir"
     };
@@ -88,7 +90,8 @@ int main() {
             case 2: {
                 vector<string> opcionesBusqueda = {
                     "Buscar por cedula",
-                    "Buscar por numero de cuenta"
+                    "Buscar por numero de cuenta",
+                    "Buscar por fecha de registro"
                 };
                 MenuInteractivo menuBusqueda(opcionesBusqueda);
                 int subopcion = menuBusqueda.ejecutar();
@@ -100,6 +103,43 @@ int main() {
                     adminBanco.buscarPorCedula(cedula);
                 } else if (subopcion == 2) {
                     adminBanco.buscarPorNumeroCuenta();
+                } else if (subopcion == 3) {
+                    // Aquí pedimos la fecha con validación encapsulada en Fecha
+                    Fecha fechaObj;
+                    cout << "\nIngrese la fecha de registro:\n";
+                    fechaObj.pedirFecha();
+
+                    string fecha = fechaObj.getFecha();
+
+                    cout << "\nResultados de la búsqueda para fecha: " << fecha << endl;
+
+                    vector<int> resultadosAhorro = buscadorAhorro.buscarPorFecha(fecha, true);
+                    if (!resultadosAhorro.empty()) {
+                        cout << "\n-- Cuentas de Ahorro --\n";
+                        for (int idx : resultadosAhorro) {
+                            cout << "Nombre: " << cuentaAhorro.getNombre(idx)
+                                 << ", Cedula: " << cuentaAhorro.getCedula(idx)
+                                 << ", Cuenta: " << cuentaAhorro.getNumeroCuentaStr(idx)
+                                 << ", Fecha Registro: " << cuentaAhorro.getFechaRegistro(idx)
+                                 << endl;
+                        }
+                    } else {
+                        cout << "No se encontraron cuentas de ahorro en esa fecha.\n";
+                    }
+
+                    vector<int> resultadosCorriente = buscadorCorriente.buscarPorFecha(fecha, false);
+                    if (!resultadosCorriente.empty()) {
+                        cout << "\n-- Cuentas Corrientes --\n";
+                        for (int idx : resultadosCorriente) {
+                            cout << "Nombre: " << cuentaCorriente.getNombre(idx)
+                                 << ", Cedula: " << cuentaCorriente.getCedula(idx)
+                                 << ", Cuenta: " << cuentaCorriente.getNumeroCuentaStr(idx)
+                                 << ", Fecha Registro: " << cuentaCorriente.getFechaRegistro(idx)
+                                 << endl;
+                        }
+                    } else {
+                        cout << "No se encontraron cuentas corrientes en esa fecha.\n";
+                    }
                 }
                 break;
             }
@@ -178,7 +218,7 @@ int main() {
                 monto = stod(Validador::validarCantidad());
 
                 if (cajero.transferir(tipoOrigen == 1, cuentaOrigen, cedula,
-                                      tipoDestino == 1, cuentaDestino, monto)) {
+                                     tipoDestino == 1, cuentaDestino, monto)) {
                     cout << "Transferencia realizada con exito." << endl;
                 } else {
                     cout << "Error al realizar la transferencia." << endl;
@@ -245,24 +285,32 @@ int main() {
                 cout << "\nArchivo de hashes generado: hashes_md5.txt\n";
                 break;
 
-            case 11:
+            case 11: {
+                string hash;
+                cout << "\nIngrese el hash MD5 a buscar: ";
+                getline(cin, hash);
+                calculadoraHash.buscarPorHash(hash);
+                break;
+            }
+
+            case 12:
                 creadorQR.generarPDFs();
                 cout << "\nQRs generados exitosamente para todos los usuarios.\n";
                 break;
 
-            case 12:
+            case 13:
                 criptador.enigma();
                 break;
 
-            case 13:
-                editor.ejecutar();  // <-- Nueva opción Ejecutar Editor
-                break;
-
             case 14:
-                menuAyuda.mostrarAyuda();
+                editor.ejecutar();
                 break;
 
             case 15:
+                menuAyuda.mostrarAyuda();
+                break;
+
+            case 16:
                 cout << "\nGracias por usar el sistema bancario. ¡Hasta pronto!" << endl;
                 salir = true;
                 break;

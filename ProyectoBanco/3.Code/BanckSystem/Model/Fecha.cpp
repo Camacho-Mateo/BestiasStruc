@@ -16,30 +16,47 @@ Fecha::~Fecha() {
 }
 
 void Fecha::pedirFecha() {
-    std::cout << "Formato DD/MM/AAAA: ";
-    char entrada[11] = "";
-    int pos = 0;
+    while (true) {
+        std::cout << "Formato DD/MM/AAAA: ";
+        char entrada[11] = "";
+        int pos = 0;
 
-    while (pos < 10) {
-        char c = _getch();
+        while (pos < 10) {
+            char c = _getch();
 
-        if ((pos == 2 || pos == 5) && c == '/') {
-            std::cout << c;
-            entrada[pos++] = c;
-        } 
-        else if (isdigit(c) && pos != 2 && pos != 5) {
-            std::cout << c;
-            entrada[pos++] = c;
+            if ((pos == 2 || pos == 5) && c == '/') {
+                std::cout << c;
+                entrada[pos++] = c;
+            } 
+            else if (isdigit(c) && pos != 2 && pos != 5) {
+                std::cout << c;
+                entrada[pos++] = c;
+            }
+            else if (c == 8 && pos > 0) { // retroceso
+                if (pos == 3 || pos == 6) { // borrar también el '/' automáticamente
+                    std::cout << "\b \b";
+                    pos--;
+                }
+                std::cout << "\b \b";
+                pos--;
+            }
         }
-        else if (c == 8 && pos > 0) {
-            pos--;
-            std::cout << "\b \b";
+
+        entrada[10] = '\0';
+
+        // Extraer el año
+        int dia = atoi(std::string(entrada, entrada + 2).c_str());
+        int mes = atoi(std::string(entrada + 3, entrada + 5).c_str());
+        int anio = atoi(std::string(entrada + 6, entrada + 10).c_str());
+
+        if (anio >= 1950 && anio <= 2025 && dia >= 1 && dia <= 31 && mes >= 1 && mes <= 12) {
+            strcpy(fechaNacimiento, entrada);
+            std::cout << std::endl;
+            break;
+        } else {
+            std::cout << "\nFecha inválida. Año debe estar entre 1950 y 2025. Intente nuevamente.\n";
         }
     }
-
-    entrada[10] = '\0';
-    strcpy(fechaNacimiento, entrada);
-    std::cout << std::endl;
 }
 
 const char* Fecha::getFecha() const {

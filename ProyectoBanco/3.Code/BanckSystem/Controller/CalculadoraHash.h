@@ -1,18 +1,21 @@
-#ifndef CALCULADORA_HASH_H
-#define CALCULADORA_HASH_H
+#ifndef CALCULADORAHASH_H
+#define CALCULADORAHASH_H
 
-#include <string>
 #include "../Model/CuentaAhorro.h"
 #include "../Model/CuentaCorriente.h"
+#include <string>
 
 class CalculadoraHash {
-public:
-    CalculadoraHash(CuentaAhorro* ca, CuentaCorriente* cc);
-    void generarArchivoHash(const std::string& nombreArchivo);
-
 private:
     CuentaAhorro* cuentaAhorro;
     CuentaCorriente* cuentaCorriente;
+
+public:
+    CalculadoraHash(CuentaAhorro* ca, CuentaCorriente* cc);
+
+    void generarArchivoHash(const std::string& nombreArchivo);
+
+    void buscarPorHash(const std::string& hash);
 };
 
 #endif
