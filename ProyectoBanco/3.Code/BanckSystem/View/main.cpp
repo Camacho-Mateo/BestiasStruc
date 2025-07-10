@@ -23,7 +23,7 @@
 #include "../Controller/Editor.h"
 #include "../Model/Fecha.h"
 #include "../Controller/Secretario.h"
-#include "../Model/AVLArbol.h"   // <-- Incluida la clase AVL
+#include "../Model/AVLArbol.h"
 
 using namespace std;
 
@@ -54,13 +54,12 @@ int main() {
     Editor editor(&cuentaAhorro, &cuentaCorriente, &adminBanco);
     Ordenador ordenador(&cuentaAhorro, &cuentaCorriente);
     CalculadoraHash calculadoraHash(&cuentaAhorro, &cuentaCorriente);
-    CreadorQR creadorQR(&cuentaAhorro, &cuentaCorriente);
+    CreadorQR creadorQR;
     MenuAyuda menuAyuda;
     Criptador criptador;
 
-    Secretario secretario;  // <-- Instancia para agendar cita
-
-    AVLArbol arbolAVL;  // <-- Instancia árbol AVL para cuentas corrientes
+    Secretario secretario;
+    AVLArbol arbolAVL;
 
     vector<string> opcionesMenu = {
         "Registrar nuevo cliente",
@@ -74,12 +73,12 @@ int main() {
         "Ordenar y mostrar cuentas",
         "Generar hashes MD5 del archivo binario",
         "Buscar cliente por hash MD5",
-        "Generar QR de usuarios",
+        "Generar QR y PDF para clientes",
         "Encriptar backup existente",
         "Editar cliente",
         "Ayuda",
         "Agendar cita",
-        "Generar árbol AVL de cuentas corrientes",  // <-- NUEVA OPCIÓN
+        "Generar Arbol AVL de cuentas corrientes",
         "Salir"
     };
 
@@ -301,8 +300,8 @@ int main() {
             }
 
             case 12:
-                creadorQR.generarPDFs();
-                cout << "\nQRs generados exitosamente para todos los usuarios.\n";
+                creadorQR.generarQRporCliente(cuentaAhorro, cuentaCorriente);
+                cout << "\nQR y PDFs generados exitosamente en la carpeta 'clientesQR'.\n";
                 break;
 
             case 13:
@@ -317,11 +316,11 @@ int main() {
                 menuAyuda.mostrarAyuda();
                 break;
 
-            case 16:  // Agendar cita
+            case 16:
                 secretario.agendar();
                 break;
 
-            case 17:  
+            case 17:
                 cout << "\nGenerando arbol AVL con cuentas corrientes desde archivo binario...\n";
                 arbolAVL.cargarCuentasCorrientesDesdeBinario("./cuentas.bin");
                 cout << "Arbol AVL generado. Mostrando arbol:\n\n";

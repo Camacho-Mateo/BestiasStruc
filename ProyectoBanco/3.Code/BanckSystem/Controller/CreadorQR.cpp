@@ -1,58 +1,128 @@
 #include "CreadorQR.h"
-#include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <sstream>
+#include <bitset>
+#include <iomanip>
+#include <filesystem>
+#include <iostream>
 
+namespace fs = std::filesystem;
 using namespace std;
 
-CreadorQR::CreadorQR(CuentaAhorro* ca, CuentaCorriente* cc)
-    : cuentaAhorro(ca), cuentaCorriente(cc) {}
+CreadorQR::CreadorQR() {
+    fs::create_directory("./clientesQR");
+}
 
-vector<vector<bool>> CreadorQR::generarQR(const string& contenido) {
-    vector<vector<bool>> qr(21, vector<bool>(21, false));
-    for (size_t i = 0; i < contenido.size() && i < 21 * 21; ++i) {
-        qr[i / 21][i % 21] = (contenido[i] % 2 == 0);
+string CreadorQR::convertirTextoABinario(const string& texto) {
+    stringstream binario;
+    for (char c : texto) {
+        binario << bitset<8>(c);
     }
+    return binario.str();
+}
+
+// Ahora genera vector<vector<bool>> con true/false para módulos negros/blancos
+vector<vector<bool>> CreadorQR::generarQRVisual(const string& binario) {
+    const int size = 21;
+    vector<vector<bool>> qr(size, vector<bool>(size, false));
+
+    size_t bitIndex = 0;
+    for (int i = 0; i < size && bitIndex < binario.size(); ++i) {
+        for (int j = 0; j < size && bitIndex < binario.size(); ++j) {
+            qr[i][j] = (binario[bitIndex++] == '1');
+        }
+    }
+
     return qr;
 }
 
-string CreadorQR::convertirQRaTexto(const vector<vector<bool>>& qrData) {
-    ostringstream ss;
-    for (const auto& fila : qrData) {
-        for (bool celda : fila) {
-            ss << (celda ? "##" : "  ");
-        }
-        ss << '\n';
+// Dibuja en PDF con módulos cuadrados (6x6 pts) negros/blancos para simular QR real
+void CreadorQR::guardarPDF(const string& nombreArchivo, const vector<vector<bool>>& qr) {
+    ofstream archivo("./clientesQR/" + nombreArchivo, ios::binary);
+    if (!archivo.is_open()) {
+        cerr << "Error al crear PDF: " << nombreArchivo << endl;
+        return;
     }
-    return ss.str();
+
+    const int size = qr.size();
+    const int modSize = 6;   // tamaño módulo en puntos PDF
+    const int margin = 20;   // margen en puntos PDF
+    const int pageWidth = margin * 2 + size * modSize;
+    const int pageHeight = margin * 2 + size * modSize;
+
+    stringstream pdf;
+
+    pdf << "%PDF-1.4\n"
+        << "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n"
+        << "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n"
+        << "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 " << pageWidth << " " << pageHeight << "] "
+           << "/Resources << >> /Contents 4 0 R >> endobj\n";
+
+    stringstream contenido;
+
+    contenido << "q\n";  // Guardar estado gráfico
+    // Fondo blanco
+    contenido << "1 1 1 rg\n";  
+    contenido << "0 0 " << pageWidth << " " << pageHeight << " re f\n";
+
+    // Dibujar módulos negros o blancos
+    for (int y = 0; y < size; ++y) {
+        for (int x = 0; x < size; ++x) {
+            if (qr[y][x]) {
+                contenido << "0 0 0 rg\n";  // negro
+            } else {
+                contenido << "1 1 1 rg\n";  // blanco
+            }
+            int px = margin + x * modSize;
+            int py = pageHeight - margin - (y + 1) * modSize;  // PDF y = 0 en abajo
+            contenido << px << " " << py << " " << modSize << " " << modSize << " re f\n";
+        }
+    }
+
+    contenido << "Q\n";  // Restaurar estado gráfico
+
+    string contenidoStr = contenido.str();
+    int length = (int)contenidoStr.size();
+
+    pdf << "4 0 obj << /Length " << length << " >> stream\n"
+        << contenidoStr
+        << "endstream\nendobj\n"
+        << "xref\n0 5\n0000000000 65535 f \n"
+        << "0000000010 00000 n \n"
+        << "0000000060 00000 n \n"
+        << "0000000110 00000 n \n"
+        << "0000000200 00000 n \n"
+        << "trailer << /Size 5 /Root 1 0 R >>\n"
+        << "startxref\n" << (200 + length + 50) << "\n%%EOF\n";
+
+    archivo << pdf.str();
+    archivo.close();
 }
 
-void CreadorQR::generarPDFs() {
-    namespace fs = filesystem;
-    fs::create_directory("UsuariosQR");
+void CreadorQR::generarQRporCliente(CuentaAhorro& ahorro, CuentaCorriente& corriente) {
+    for (size_t i = 0; i < ahorro.getTotalCuentas(); ++i) {
+        string datos = ahorro.getCedula(i) + "|" + ahorro.getNombre(i) + "|" + ahorro.getNumeroCuentaStr(i);
+        if (datos == "||") continue;
 
-    for (size_t i = 0; i < cuentaAhorro->getTotalCuentas(); ++i) {
-        string nombre = cuentaAhorro->getNombre(i);
-        string cuenta = cuentaAhorro->getNumeroCuentaStr(i);
-        string contenido = nombre + " - " + cuenta;
+        cout << "Generando QR para: " << datos << endl;
 
-        vector<vector<bool>> qr = generarQR(contenido);
-        string qrAscii = convertirQRaTexto(qr);
+        string binario = convertirTextoABinario(datos);
+        auto qr = generarQRVisual(binario);
 
-        string rutaPDF = "UsuariosQR/" + cuenta + ".pdf";
-        administradorPDF.crearPDFConTexto(rutaPDF, qrAscii);
+        string nombrePdf = "QR_" + ahorro.getCedula(i) + "_" + ahorro.getNumeroCuentaStr(i) + ".pdf";
+        guardarPDF(nombrePdf, qr);
     }
 
-    for (size_t i = 0; i < cuentaCorriente->getTotalCuentas(); ++i) {
-        string nombre = cuentaCorriente->getNombre(i);
-        string cuenta = cuentaCorriente->getNumeroCuentaStr(i);
-        string contenido = nombre + " - " + cuenta;
+    for (size_t i = 0; i < corriente.getTotalCuentas(); ++i) {
+        string datos = corriente.getCedula(i) + "|" + corriente.getNombre(i) + "|" + corriente.getNumeroCuentaStr(i);
+        if (datos == "||") continue;
 
-        vector<vector<bool>> qr = generarQR(contenido);
-        string qrAscii = convertirQRaTexto(qr);
+        cout << "Generando QR para: " << datos << endl;
 
-        string rutaPDF = "UsuariosQR/" + cuenta + ".pdf";
-        administradorPDF.crearPDFConTexto(rutaPDF, qrAscii);
+        string binario = convertirTextoABinario(datos);
+        auto qr = generarQRVisual(binario);
+
+        string nombrePdf = "QR_" + corriente.getCedula(i) + "_" + corriente.getNumeroCuentaStr(i) + ".pdf";
+        guardarPDF(nombrePdf, qr);
     }
 }
