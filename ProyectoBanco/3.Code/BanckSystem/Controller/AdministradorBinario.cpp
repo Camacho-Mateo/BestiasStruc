@@ -1,4 +1,5 @@
 #include "AdministradorBinario.h"
+#include "AdministradorPDF.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -97,7 +98,12 @@ void AdministradorBinario::guardarCuentas(const CuentaAhorro& cuentaAhorro, cons
 
     archivoBin.close();
     archivoTxt.close();
+
+    AdministradorPDF administradorPDF;
+    administradorPDF.crearPDFDesdeTxt("./cuentas.txt", "./cuentas.pdf");
+    cout << "PDF generado exitosamente como ./cuentas.pdf" << endl;
 }
+
 
 
 void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorriente& cuentaCorriente) {
@@ -155,6 +161,7 @@ void AdministradorBinario::cargarCuentas(CuentaAhorro& cuentaAhorro, CuentaCorri
     }
 
     archivo.close();
+    
 }
 
 void AdministradorBinario::crearBackup() {

@@ -2,19 +2,19 @@
 #define MENU_AYUDA_H
 
 #include <iostream>
-#include <filesystem>
 #include <windows.h>
-#include <shellapi.h> 
+#include <shellapi.h>
+#include <filesystem>
 
 class MenuAyuda {
 public:
     void mostrarAyuda() {
-        std::string ruta = "..BanckSystem/bin/ayuda/index.html";
+        std::string ruta = "ayuda\\Sistema Bancario BANKSYSTEM.chm";
 
         if (std::filesystem::exists(ruta)) {
-            ShellExecute(NULL, "open", ruta.c_str(), NULL, NULL, SW_SHOWNORMAL);
+            ShellExecuteA(NULL, "open", ("\"" + ruta + "\"").c_str(), NULL, NULL, SW_SHOWNORMAL);
         } else {
-            std::cout << "Archivo de ayuda no encontrado: " << ruta << std::endl;
+            std::cout << "Archivo de ayuda no encontrado:\n" << ruta << std::endl;
             mostrarAyudaTexto();
         }
     }
@@ -30,8 +30,8 @@ private:
         std::cout << "- Crear y restaurar respaldos\n";
         std::cout << "- Ordenar cuentas por nombre o número\n";
         std::cout << "- Generar códigos QR y hashes MD5\n";
-        std::cout << "\nConsulte el archivo 'ayuda/index.html' para más detalles.\n";
-        std::cout << "\nPresione cualquier tecla para continuar...";
+        std::cout << "- Agendar citas y generar reportes\n";
+        std::cout << "\nPresione ENTER para continuar...";
         std::cin.get();
     }
 };

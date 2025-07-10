@@ -14,7 +14,7 @@ Cuenta #2
 Cédula: 1716151392
 Nombre: Yadira Ponce
 Número de cuenta: AH01-001002
-Saldo: 0
+Saldo: 30
 Teléfono: 0989543434
 Correo: yady@gmail.com
 Sucursal: 01
@@ -29,6 +29,36 @@ Teléfono: 0989543483
 Correo: Mateo@gmail.com
 Sucursal: 01
 Fecha registro: 09/07/2025
+---------------------------
+Cuenta #4
+Cédula: 1803005071
+Nombre: Fernando Solis
+Número de cuenta: AH02-001004
+Saldo: 0
+Teléfono: 099990522
+Correo: .@gmail.com
+Sucursal: 02
+Fecha registro: 10/07/2025
+---------------------------
+Cuenta #5
+Cédula: 1803005071
+Nombre: Fernando Solis
+Número de cuenta: AH02-001005
+Saldo: 0
+Teléfono: 099990522
+Correo: .@gmail.com
+Sucursal: 02
+Fecha registro: 10/07/2025
+---------------------------
+Cuenta #6
+Cédula: 1726473240
+Nombre: Jonathan Diaz
+Número de cuenta: AH01-001006
+Saldo: 5
+Teléfono: 0983342102
+Correo: ja@homai.com
+Sucursal: 01
+Fecha registro: 10/07/2025
 ---------------------------
 
 CUENTAS CORRIENTES:
@@ -62,4 +92,24 @@ Teléfono: 0989543483
 Correo: Mateo@gmail.com
 Sucursal: 01
 Fecha registro: 09/07/2025
+---------------------------
+Cuenta #4
+Cédula: 1726473240
+Nombre: Jonathan Diaz
+Número de cuenta: CC01-002004
+Saldo: 0
+Teléfono: 0983342102
+Correo: ja@homai.com
+Sucursal: 01
+Fecha registro: 10/07/2025
+---------------------------
+Cuenta #5
+Cédula: 1726473240
+Nombre: Jonathan Diaz
+Número de cuenta: CC01-002005
+Saldo: 0
+Teléfono: 0983342102
+Correo: ja@homai.com
+Sucursal: 01
+Fecha registro: 10/07/2025
 ---------------------------
